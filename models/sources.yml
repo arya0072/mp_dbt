@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: mp_infor # Arbitrary group name for your source tables
+    database: mitraprodin-data-warehouse # Or use dbt profiles for this
+    tables:
+      - name: mp80_incentives
+      - name: job_transaction_mp
+      - name: META_EmployeeHalfDay_v # Consider renaming if it contains _v for view
+      - name: JobExclude
