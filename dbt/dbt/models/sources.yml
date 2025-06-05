@@ -18,6 +18,8 @@ sources:
       - name: cost_of_production_PLN_mp
       - name: cost_of_production_PLN_jmbr
       - name: salestransaction
+      - name: employee_absence
+      - name: user_case
 
   - name: PlantControlGianyarDps
     database: mitraprodin-data-warehouse
