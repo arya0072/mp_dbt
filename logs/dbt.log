@@ -1,0 +1,14 @@
+dbt-fusion 2.0.0-beta.12
+   Loading ~/.dbt/profiles.yml
+warning: dbt1005: Unused keys in profiles.yml target 'dev': 'job_execution_timeout_seconds', 'job_retries'
+   Loading dbt_project.yml
+   Loading dbt_internal_packages/dbt-adapters/dbt_project.yml
+   Loading dbt_internal_packages/dbt-bigquery/dbt_project.yml
+error: dbt1014: Failed to download source schema for 'source.mp_dbt.PlantControlGianyarDps.JO_PostedBy': ADBC error: [BigQuery] googleapi: Error 403: Access Denied: Table mitraprodin-data-warehouse:PlantControlGianyarDps.INFORMATION_SCHEMA.COLUMNS: User does not have permission to query table mitraprodin-data-warehouse:PlantControlGianyarDps.INFORMATION_SCHEMA.COLUMNS, or perhaps it does not exist., accessDenied
+error: dbt1014: Failed to download source schema for 'source.mp_dbt.PlantControlGianyarDps.conversions_table': ADBC error: [BigQuery] googleapi: Error 403: Access Denied: Table mitraprodin-data-warehouse:PlantControlGianyarDps.conversions_table: User does not have permission to query table mitraprodin-data-warehouse:PlantControlGianyarDps.conversions_table, or perhaps it does not exist., accessDenied
+   Running models/mart/META_TotalHours_v.sql
+error: dbt1501: Error materializing model model.mp_dbt.META_TotalHours_v: invalid operation: AdapterError: Configuration error: The method `BigQueryAdapter.describe_relation` is not implemented for this relation type: table
+(in dbt_internal_packages/dbt-bigquery/macros/materializations/table.sql:27)
+  --> dbt/target/compiled/models/mart/META_TotalHours_v.sql
+    Failed model.mp_dbt.META_TotalHours_v
+  Finished 'build' target 'dev' with 3 errors and 1 warning in 8s 142ms 305us 991ns

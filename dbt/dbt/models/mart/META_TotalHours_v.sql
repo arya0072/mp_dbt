@@ -28,7 +28,7 @@ FROM {{ source('mp_infor', 'mp80_incentives') }} a
               jobtUf_MP55_EmployeeCount AS EmpCountJT
             from {{ source('mp_infor', 'job_transaction_mp')}} 
             where OperNum='10' ) JT ON a.Job = JT.job
-  LEFT JOIN {{ source('mp_infor', 'META_EmployeeHalfDay_v') }} HD ON TRIM(a.EmpNum) = HD.nik AND DATE(a.IncentiveDate) = HD.absence_date 
+  LEFT JOIN {{ ref('META_EmployeeHalfDay_v') }} HD ON TRIM(a.EmpNum) = HD.nik AND DATE(a.IncentiveDate) = HD.absence_date 
   LEFT JOIN (SELECT 
                 FORMAT_DATE('%Y-%m-%d', a.IncentiveDate) AS IncentiveDate,
                 TRIM(a.EmpNum) AS NIK,
