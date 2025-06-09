@@ -40,4 +40,4 @@ SELECT
   COUNT(*) AS TotalDaysMonth
 FROM WorkingDays
 GROUP BY PeriodeDate,PeriodeCurrentDate
-ORDER BY PeriodeDate ASC;
+ORDER BY PeriodeDate ASC

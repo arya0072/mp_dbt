@@ -24,6 +24,11 @@ sources:
       - name: product_codes_BQ
       - name: user_absence
       - name: WorkingDays
+      - name: userleave_detail
+      - name: UserResign
+      - name: items
+      - name: item_attribute_all
+      - name: jobRoutes
 
   - name: PlantControlGianyarDps
     database: mitraprodin-data-warehouse
