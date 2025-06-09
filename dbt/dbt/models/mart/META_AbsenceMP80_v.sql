@@ -1,6 +1,6 @@
 {{
   config(
-    materialized: 'table'
+    materialized= 'table'
   )
 }}
 
@@ -32,7 +32,7 @@ select
     END
   ) AS Periode,
   FORMAT_DATE('%Y-%m-%d', a.IncentiveDate) AS IncentiveDate
-from {{ source('mp_infor', 'p80_incentives') }} a 
+from {{ source('mp_infor', 'mp80_incentives') }} a 
 where (a.Gross > 0 AND a.TargetQty > 0 AND a.TotalHours > 0) 
   AND a.IncentiveDate >= '2025-01-21'
   AND SUBSTR(a.Job, 1, 4) IN ('JSFG','JSFJ','JSMJ')  

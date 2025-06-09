@@ -1,6 +1,6 @@
 {{
   config(
-    materialized: 'table'
+    materialized= 'table'
   )
 }}
 
@@ -25,8 +25,8 @@ SELECT
     END
   ) AS Periode,
   COUNT(a.nik) AS CountAbsence
-FROM {{ source('mp_infor', 'employee_absence' )}} a
-
+FROM {{ source('mp_infor', 'employee_absence') }} a
+-- WHERE a.nik='181202'
 GROUP BY PeriodeDate, Periode,
 a.nik,a.employee_name
-ORDER BY PeriodeDate;
+ORDER BY PeriodeDate

@@ -1,6 +1,6 @@
 {{
   config(
-    materialized: 'table'
+    materialized= 'table'
   )
 }}
 
@@ -31,4 +31,4 @@ WHERE a.start_date IS NOT NULL
   AND a.sp_type NOT IN ('Discussion Form','Surat Teguran Pertama (ST-I)','Surat Teguran Kedua (ST-II)','Surat Teguran Ketiga (ST-III)')
 GROUP BY PeriodeDate, Periode,
 a.nik,a.full_name
-ORDER BY PeriodeDate;
+ORDER BY PeriodeDate
