@@ -1,3 +1,10 @@
+{{
+  config(
+    materialized= 'table'
+  )
+}}
+
+
 SELECT 
   a.Periode,
   a.PeriodeDate,
