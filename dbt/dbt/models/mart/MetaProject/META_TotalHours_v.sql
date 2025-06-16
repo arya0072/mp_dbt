@@ -17,8 +17,8 @@ DISTINCT
     WHEN double_job.count_job > 1 THEN a.TotalHours
     WHEN HD.is_halfday IS TRUE THEN a.TotalHours
     WHEN a.TotalHours = JT.AHrs THEN JT.AHrs
-    WHEN a.TotalHours < JT.AHrs THEN a.TotalHours
-    WHEN a.TotalHours > JT.AHrs THEN JT.AHrs
+    WHEN a.TotalHours > JT.AHrs THEN a.TotalHours
+    WHEN a.TotalHours < JT.AHrs THEN JT.AHrs
     ELSE JT.AHrs
   END AS TotalHours
 FROM {{ source('mp_infor', 'mp80_incentives') }} a

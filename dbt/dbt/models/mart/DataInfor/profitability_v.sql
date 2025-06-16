@@ -5,20 +5,20 @@
 }}
 
 --ACTUAL MP--
-SELECT 
+SELECT DISTINCT 
   'ACTUAL' AS CopType,
   'PROD' AS TransType,
   cop.site AS Site,
   cop.ue_Item AS Item,
   cop.ue_ItemDesc AS ItemDesc,
-  NULL AS ItemChildDesc,
+  '' AS ItemChildDesc,
   cop.ue_ItemType AS ItemType,
-  NULL AS ItemOverview,
+  '' AS ItemOverview,
   cop.ue_UM AS Um,
-  NULL AS InvoiceNum,
-  NULL AS ConvFactor,
-  NULL AS ConvUn,
-  NULL AS ExchRate,
+  '' AS InvoiceNum,
+  conv.Convertion AS ConvFactor,
+  '' AS ConvUn,
+  '' AS ExchRate,
   cop.ue_Job AS Job,
   CASE
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('PCK') AND cop.ue_ItemType = 'Material' THEN 'Packaging'
@@ -46,14 +46,14 @@ SELECT
   cop.ue_WCDesc as WCDesc,
   cop.ue_ProdCodeDesc as ProdCodeDesc,
   cop.ue_TransDate as Date,
-  NULL AS ItemChild,
+  '' AS ItemChild,
   cop.ue_CustNum AS CustomerNum,
   cop.ue_CustName AS CustomerName,
   cop.ue_Qty as ProdQty,
   0 as ProdQtyChild,
   cop.ue_Qty AS ProdQtyAvg,
-  0 as SalesQtyPcs,
-  0 as SalesQty,
+  CAST(0 AS FLOAT64) as SalesQtyPcs,
+  CAST(0 AS FLOAT64) as SalesQty,
   cop.ue_TotalMaterialCost as COPMaterial,
   cop.ue_TotalLaborCost as COPLabor,
   cop.ue_TotalFovhdCost as COPFixOH,
@@ -61,18 +61,18 @@ SELECT
   cop.ue_OutsideCost AS COPOutSide,
   cop.ue_TotalOutsideCost AS COPTotalOutSide,
   cop.ue_TotalCost AS COPTotal,
-  NULL AS CurrCode,
-  0 AS SalesGross,
-  0 as DiscountUnit,
-  0 AS SalesNett,
-  0 AS SalesNettDomestic,
-  0 AS COGSDomestic,
-  0 AS COGSLabourSC,
-  0 AS COGSMaterialSC,
-  0 AS COGSFixOHSC,
-  0 AS COGSVarOHSC,
-  0 AS COGSOutSideSC,
-  0 AS COGSTotalSC,
+  '' AS CurrCode,
+  CAST(0 AS FLOAT64) AS SalesGross,
+  CAST(0 AS FLOAT64) as DiscountUnit,
+  CAST(0 AS FLOAT64) AS SalesNett,
+  CAST(0 AS FLOAT64) AS SalesNettDomestic,
+  CAST(0 AS FLOAT64) AS COGSDomestic,
+  CAST(0 AS FLOAT64) AS COGSLabourSC,
+  CAST(0 AS FLOAT64) AS COGSMaterialSC,
+  CAST(0 AS FLOAT64) AS COGSFixOHSC,
+  CAST(0 AS FLOAT64) AS COGSVarOHSC,
+  CAST(0 AS FLOAT64) AS COGSOutSideSC,
+  CAST(0 AS FLOAT64) AS COGSTotalSC,
   cop.ue_LaborCost AS LaborCost,
   cop.ue_MaterialCost AS MaterialCost,
   cop.ue_fovhdCost AS FixOHCost,
@@ -80,17 +80,17 @@ SELECT
   cop.ue_ProductCode AS ProductCode,
   cop.ue_suffix AS Suffix,
   cop.ue_WC AS WorkCenter,
-  cop.month_year AS MonthYear,
-  NULL AS Resource,
+  '' AS MonthYear,
+  '' AS Resource,
   jobs.whse AS Warehouse,
   matl.ue_UpdatedBy AS UpdatedBy
-FROM {{ source ('mp_infor', 'cost_of_production_mp_new')}} cop
-  LEFT JOIN {{ source ('mp_infor', 'Jobs') }} jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
+FROM {{ source('mp_infor', 'cost_of_production_mp_new') }} cop 
+  LEFT JOIN {{ source('mp_infor', 'Jobs') }} jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
   LEFT JOIN {{ source('PlantControlGianyarDps', 'JO_PostedBy') }} matl ON cop.ue_Job = matl.RefNum
-  LEFT JOIN {{ source('PlantControlGianyarDps', 'conversions_table')}} conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM
+  LEFT JOIN {{ ref('conversions_table') }} conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM
 WHERE cop.ue_ItemType = 'Item'
 UNION ALL
-SELECT 
+SELECT DISTINCT 
   'ACTUAL' AS CopType,
   'PROD' AS TransType,
   cop.site AS Site,
@@ -98,12 +98,12 @@ SELECT
   header.ue_ItemDesc AS ItemDesc,
   cop.ue_ItemDesc AS ItemChildDesc,
   cop.ue_ItemType AS ItemType,
-  NULL AS ItemOverview,
+  '' AS ItemOverview,
   cop.ue_UM AS Um,
-  NULL AS InvoiceNum,
-  NULL AS ConvFactor,
-  NULL AS ConvUn,
-  NULL AS ExchRate,
+  '' AS InvoiceNum,
+  conv.Convertion AS ConvFactor,
+  '' AS ConvUn,
+  '' AS ExchRate,
   cop.ue_Job AS Job,
   CASE
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('PCK') AND cop.ue_ItemType = 'Material' THEN 'Packaging'
@@ -134,11 +134,11 @@ SELECT
   cop.ue_Item AS ItemChild,
   cop.ue_CustNum AS CustomerNum,
   cop.ue_CustName AS CustomerName,
-  0 as ProdQty,
+  CAST(0 AS FLOAT64) AS ProdQty,
   cop.ue_Qty as ProdQtyChild,
   header.ue_qty AS ProdQtyAvg,
-  0 as SalesQtyPcs,
-  0 as SalesQty,
+  CAST(0 AS FLOAT64) as SalesQtyPcs,
+  CAST(0 AS FLOAT64) as SalesQty,
   cop.ue_TotalMaterialCost as COPMaterial,
   cop.ue_TotalLaborCost as COPLabor,
   cop.ue_TotalFovhdCost as COPFixOH,
@@ -146,18 +146,18 @@ SELECT
   cop.ue_OutsideCost AS COPOutSide,
   cop.ue_TotalOutsideCost AS COPTotalOutSide,
   cop.ue_TotalCost AS COPTotal,
-  NULL AS CurrCode,
-  0 AS SalesGross,
-  0 as DiscountUnit,
-  0 AS SalesNett,
-  0 AS SalesNettDomestic,
-  0 AS COGSDomestic,
-  0 AS COGSLabourSC,
-  0 AS COGSMaterialSC,
-  0 AS COGSFixOHSC,
-  0 AS COGSVarOHSC,
-  0 AS COGSOutSideSC,
-  0 AS COGSTotalSC,
+  '' AS CurrCode,
+  CAST(0 AS FLOAT64) AS SalesGross,
+  CAST(0 AS FLOAT64) as DiscountUnit,
+  CAST(0 AS FLOAT64) AS SalesNett,
+  CAST(0 AS FLOAT64) AS SalesNettDomestic,
+  CAST(0 AS FLOAT64) AS COGSDomestic,
+  CAST(0 AS FLOAT64) AS COGSLabourSC,
+  CAST(0 AS FLOAT64) AS COGSMaterialSC,
+  CAST(0 AS FLOAT64) AS COGSFixOHSC,
+  CAST(0 AS FLOAT64) AS COGSVarOHSC,
+  CAST(0 AS FLOAT64) AS COGSOutSideSC,
+  CAST(0 AS FLOAT64) AS COGSTotalSC,
   cop.ue_LaborCost AS LaborCost,
   cop.ue_MaterialCost AS MaterialCost,
   cop.ue_fovhdCost AS FixOHCost,
@@ -165,35 +165,35 @@ SELECT
   cop.ue_ProductCode AS ProductCode,
   cop.ue_suffix AS Suffix,
   cop.ue_WC AS WorkCenter,
-  cop.month_year AS MonthYear,
-  NULL AS Resource,
+  '' AS MonthYear,
+  '' AS Resource,
   jobs.whse AS Warehouse,
   matl.ue_UpdatedBy AS UpdatedBy
-FROM {{ source ('mp_infor', 'cost_of_production_mp_new')}} cop
-  LEFT JOIN {{ source ('mp_infor', 'cost_of_production_mp_new') }} header ON cop.ue_Job = header.ue_Job 
-                                                        AND header.ue_ItemType = 'Item'
-  LEFT JOIN {{ source ('mp_infor', 'Jobs') }} jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
+FROM {{ source('mp_infor', 'cost_of_production_mp_new') }} cop
+  LEFT JOIN {{ source('mp_infor', 'cost_of_production_mp_new') }} header ON cop.ue_Job = header.ue_Job 
+                                                                         AND header.ue_ItemType = 'Item'
+  LEFT JOIN {{ source('mp_infor', 'Jobs') }} jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
   LEFT JOIN {{ source('PlantControlGianyarDps', 'JO_PostedBy') }} matl ON cop.ue_Job = matl.RefNum
-  LEFT JOIN {{ source('PlantControlGianyarDps', 'conversions_table') }}` conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM
+  LEFT JOIN {{ ref('conversions_table') }} conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM
 WHERE cop.ue_ItemType <> 'Item'
 UNION ALL
 --END ACTUAL MP--
 
 --ACTUAL MPKB--
-SELECT 
+SELECT DISTINCT 
   'ACTUAL' AS CopType,
   'PROD' AS TransType,
   cop.site AS Site,
   cop.ue_Item AS Item,
   cop.ue_ItemDesc AS ItemDesc,
-  NULL AS ItemChildDesc,
+  '' AS ItemChildDesc,
   cop.ue_ItemType AS ItemType,
-  NULL AS ItemOverview,
+  '' AS ItemOverview,
   cop.ue_UM AS Um,
-  NULL AS InvoiceNum,
+  '' AS InvoiceNum,
   conv.Convertion AS ConvFactor,
-  NULL AS ConvUn,
-  NULL AS ExchRate,
+  '' AS ConvUn,
+  '' AS ExchRate,
   cop.ue_Job AS Job,
   CASE
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('PCK') AND cop.ue_ItemType = 'Material' THEN 'Packaging'
@@ -221,14 +221,14 @@ SELECT
   cop.ue_WCDesc as WCDesc,
   cop.ue_ProdCodeDesc as ProdCodeDesc,
   cop.ue_TransDate as Date,
-  NULL AS ItemChild,
+  '' AS ItemChild,
   cop.ue_CustNum AS CustomerNum,
   cop.ue_CustName AS CustomerName,
   cop.ue_Qty as ProdQty,
   0 as ProdQtyChild,
   cop.ue_Qty AS ProdQtyAvg,
-  0 as SalesQtyPcs,
-  0 as SalesQty,
+  CAST(0 AS FLOAT64) as SalesQtyPcs,
+  CAST(0 AS FLOAT64) as SalesQty,
   cop.ue_TotalMaterialCost as COPMaterial,
   cop.ue_TotalLaborCost as COPLabor,
   cop.ue_TotalFovhdCost as COPFixOH,
@@ -236,18 +236,18 @@ SELECT
   cop.ue_OutsideCost AS COPOutSide,
   cop.ue_TotalOutsideCost AS COPTotalOutSide,
   cop.ue_TotalCost AS COPTotal,
-  NULL AS CurrCode,
-  0 AS SalesGross,
-  0 as DiscountUnit,
-  0 AS SalesNett,
-  0 AS SalesNettDomestic,
-  0 AS COGSDomestic,
-  0 AS COGSLabourSC,
-  0 AS COGSMaterialSC,
-  0 AS COGSFixOHSC,
-  0 AS COGSVarOHSC,
-  0 AS COGSOutSideSC,
-  0 AS COGSTotalSC,
+  '' AS CurrCode,
+  CAST(0 AS FLOAT64) AS SalesGross,
+  CAST(0 AS FLOAT64) as DiscountUnit,
+  CAST(0 AS FLOAT64) AS SalesNett,
+  CAST(0 AS FLOAT64) AS SalesNettDomestic,
+  CAST(0 AS FLOAT64) AS COGSDomestic,
+  CAST(0 AS FLOAT64) AS COGSLabourSC,
+  CAST(0 AS FLOAT64) AS COGSMaterialSC,
+  CAST(0 AS FLOAT64) AS COGSFixOHSC,
+  CAST(0 AS FLOAT64) AS COGSVarOHSC,
+  CAST(0 AS FLOAT64) AS COGSOutSideSC,
+  CAST(0 AS FLOAT64) AS COGSTotalSC,
   cop.ue_LaborCost AS LaborCost,
   cop.ue_MaterialCost AS MaterialCost,
   cop.ue_fovhdCost AS FixOHCost,
@@ -255,17 +255,17 @@ SELECT
   cop.ue_ProductCode AS ProductCode,
   cop.ue_suffix AS Suffix,
   cop.ue_WC AS WorkCenter,
-  cop.month_year AS MonthYear,
-  NULL AS Resource,
+  '' AS MonthYear,
+  '' AS Resource,
   jobs.whse AS Warehouse,
   matl.ue_UpdatedBy AS UpdatedBy
-FROM {{ source ('mp_infor', 'cost_of_production_mpkb_new') }} cop
-  LEFT JOIN {{ source ('mp_infor', 'Jobs') }} jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
+FROM {{ source('mp_infor', 'cost_of_production_mpkb_new') }} cop
+  LEFT JOIN {{ source('mp_infor', 'Jobs') }} jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
   LEFT JOIN {{ source('PlantControlGianyarDps', 'JO_PostedBy') }} matl ON cop.ue_Job = matl.RefNum
-  LEFT JOIN {{ source('PlantControlGianyarDps', 'conversions_table') }} conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM
+  LEFT JOIN {{ ref('conversions_table') }} conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM
 WHERE cop.ue_ItemType = 'Item'
 UNION ALL
-SELECT 
+SELECT DISTINCT 
   'ACTUAL' AS CopType,
   'PROD' AS TransType,
   cop.site AS Site,
@@ -273,12 +273,12 @@ SELECT
   header.ue_ItemDesc AS ItemDesc,
   cop.ue_ItemDesc AS ItemChildDesc,
   cop.ue_ItemType AS ItemType,
-  NULL AS ItemOverview,
+  '' AS ItemOverview,
   cop.ue_UM AS Um,
-  NULL AS InvoiceNum,
+  '' AS InvoiceNum,
   conv.Convertion AS ConvFactor,
-  NULL AS ConvUn,
-  NULL AS ExchRate,
+  '' AS ConvUn,
+  '' AS ExchRate,
   cop.ue_Job AS Job,
   CASE
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('PCK') AND cop.ue_ItemType = 'Material' THEN 'Packaging'
@@ -309,11 +309,11 @@ SELECT
   cop.ue_Item AS ItemChild,
   cop.ue_CustNum AS CustomerNum,
   cop.ue_CustName AS CustomerName,
-  0 as ProdQty,
+  CAST(0 AS FLOAT64) AS ProdQty,
   cop.ue_qty as ProdQtyChild,
   header.ue_Qty AS ProdQtyAvg,
-  0 as SalesQtyPcs,
-  0 as SalesQty,
+  CAST(0 AS FLOAT64) as SalesQtyPcs,
+  CAST(0 AS FLOAT64) as SalesQty,
   cop.ue_TotalMaterialCost as COPMaterial,
   cop.ue_TotalLaborCost as COPLabor,
   cop.ue_TotalFovhdCost as COPFixOH,
@@ -321,18 +321,18 @@ SELECT
   cop.ue_OutsideCost AS COPOutSide,
   cop.ue_TotalOutsideCost AS COPTotalOutSide,
   cop.ue_TotalCost AS COPTotal,
-  NULL AS CurrCode,
-  0 AS SalesGross,
-  0 as DiscountUnit,
-  0 AS SalesNett,
-  0 AS SalesNettDomestic,
-  0 AS COGSDomestic,
-  0 AS COGSLabourSC,
-  0 AS COGSMaterialSC,
-  0 AS COGSFixOHSC,
-  0 AS COGSVarOHSC,
-  0 AS COGSOutSideSC,
-  0 AS COGSTotalSC,
+  '' AS CurrCode,
+  CAST(0 AS FLOAT64) AS SalesGross,
+  CAST(0 AS FLOAT64) as DiscountUnit,
+  CAST(0 AS FLOAT64) AS SalesNett,
+  CAST(0 AS FLOAT64) AS SalesNettDomestic,
+  CAST(0 AS FLOAT64) AS COGSDomestic,
+  CAST(0 AS FLOAT64) AS COGSLabourSC,
+  CAST(0 AS FLOAT64) AS COGSMaterialSC,
+  CAST(0 AS FLOAT64) AS COGSFixOHSC,
+  CAST(0 AS FLOAT64) AS COGSVarOHSC,
+  CAST(0 AS FLOAT64) AS COGSOutSideSC,
+  CAST(0 AS FLOAT64) AS COGSTotalSC,
   cop.ue_LaborCost AS LaborCost,
   cop.ue_MaterialCost AS MaterialCost,
   cop.ue_fovhdCost AS FixOHCost,
@@ -340,35 +340,35 @@ SELECT
   cop.ue_ProductCode AS ProductCode,
   cop.ue_suffix AS Suffix,
   cop.ue_WC AS WorkCenter,
-  cop.month_year AS MonthYear,
-  NULL AS Resource,
+  '' AS MonthYear,
+  '' AS Resource,
   jobs.whse AS Warehouse,
   matl.ue_UpdatedBy AS UpdatedBy
-FROM {{ source ('mp_infor', 'cost_of_production_mpkb_new') }} cop
-  LEFT JOIN {{ source ('mp_infor', 'cost_of_production_mpkb_new') }} header ON cop.ue_Job = header.ue_Job 
-                                                          AND header.ue_ItemType = 'Item'
-  LEFT JOIN {{ source ('mp_infor', 'Jobs') }} jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
+FROM {{ source('mp_infor', 'cost_of_production_mpkb_new') }} cop
+  LEFT JOIN {{ source('mp_infor', 'cost_of_production_mpkb_new') }} header ON cop.ue_Job = header.ue_Job 
+                                                                           AND header.ue_ItemType = 'Item'
+  LEFT JOIN {{ source('mp_infor', 'Jobs') }} jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
   LEFT JOIN {{ source('PlantControlGianyarDps', 'JO_PostedBy') }} matl ON cop.ue_Job = matl.RefNum
-  LEFT JOIN {{ source('PlantControlGianyarDps', 'conversions_table') }} conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM
+  LEFT JOIN {{ ref('conversions_table') }} conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM
 WHERE cop.ue_ItemType <> 'Item'
 UNION ALL
 --END ACTUAL MPKB--
 
 --ACTUAL JEMBRANA--
-SELECT 
+SELECT DISTINCT 
   'ACTUAL' AS CopType,
   'PROD' AS TransType,
   cop.site AS Site,
   cop.ue_Item AS Item,
   cop.ue_ItemDesc AS ItemDesc,
-  NULL AS ItemChildDesc,
+  '' AS ItemChildDesc,
   cop.ue_ItemType AS ItemType,
-  NULL AS ItemOverview,
+  '' AS ItemOverview,
   cop.ue_UM AS Um,
-  NULL AS InvoiceNum,
+  '' AS InvoiceNum,
   conv.Convertion AS ConvFactor,
-  NULL AS ConvUn,
-  NULL AS ExchRate,
+  '' AS ConvUn,
+  '' AS ExchRate,
   cop.ue_Job AS Job,
   CASE
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('PCK') AND cop.ue_ItemType = 'Material' THEN 'Packaging'
@@ -396,14 +396,14 @@ SELECT
   cop.ue_WCDesc as WCDesc,
   cop.ue_ProdCodeDesc as ProdCodeDesc,
   cop.ue_TransDate as Date,
-  NULL AS ItemChild,
+  '' AS ItemChild,
   cop.ue_CustNum AS CustomerNum,
   cop.ue_CustName AS CustomerName,
   cop.ue_Qty as ProdQty,
   0 as ProdQtyChild,
   cop.ue_Qty AS ProdQtyAvg,
-  0 as SalesQtyPcs,
-  0 as SalesQty,
+  CAST(0 AS FLOAT64) as SalesQtyPcs,
+  CAST(0 AS FLOAT64) as SalesQty,
   cop.ue_TotalMaterialCost as COPMaterial,
   cop.ue_TotalLaborCost as COPLabor,
   cop.ue_TotalFovhdCost as COPFixOH,
@@ -411,18 +411,18 @@ SELECT
   cop.ue_OutsideCost AS COPOutSide,
   cop.ue_TotalOutsideCost AS COPTotalOutSide,
   cop.ue_TotalCost AS COPTotal,
-  NULL AS CurrCode,
-  0 AS SalesGross,
-  0 as DiscountUnit,
-  0 AS SalesNett,
-  0 AS SalesNettDomestic,
-  0 AS COGSDomestic,
-  0 AS COGSLabourSC,
-  0 AS COGSMaterialSC,
-  0 AS COGSFixOHSC,
-  0 AS COGSVarOHSC,
-  0 AS COGSOutSideSC,
-  0 AS COGSTotalSC,
+  '' AS CurrCode,
+  CAST(0 AS FLOAT64) AS SalesGross,
+  CAST(0 AS FLOAT64) as DiscountUnit,
+  CAST(0 AS FLOAT64) AS SalesNett,
+  CAST(0 AS FLOAT64) AS SalesNettDomestic,
+  CAST(0 AS FLOAT64) AS COGSDomestic,
+  CAST(0 AS FLOAT64) AS COGSLabourSC,
+  CAST(0 AS FLOAT64) AS COGSMaterialSC,
+  CAST(0 AS FLOAT64) AS COGSFixOHSC,
+  CAST(0 AS FLOAT64) AS COGSVarOHSC,
+  CAST(0 AS FLOAT64) AS COGSOutSideSC,
+  CAST(0 AS FLOAT64) AS COGSTotalSC,
   cop.ue_LaborCost AS LaborCost,
   cop.ue_MaterialCost AS MaterialCost,
   cop.ue_fovhdCost AS FixOHCost,
@@ -430,17 +430,17 @@ SELECT
   cop.ue_ProductCode AS ProductCode,
   cop.ue_suffix AS Suffix,
   cop.ue_WC AS WorkCenter,
-  cop.month_year AS MonthYear,
-  NULL AS Resource,
+  '' AS MonthYear,
+  '' AS Resource,
   jobs.whse AS Warehouse,
   matl.ue_UpdatedBy AS UpdatedBy
-FROM {{ source ('mp_infor', 'cost_of_production_jmbr_new') }} cop
-  LEFT JOIN {{ source ('mp_infor', 'Jobs') }} jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
+FROM {{ source('mp_infor', 'cost_of_production_jmbr_new') }} cop
+  LEFT JOIN {{ source('mp_infor', 'Jobs') }} jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
   LEFT JOIN {{ source('PlantControlGianyarDps', 'JO_PostedBy') }} matl ON cop.ue_Job = matl.RefNum
-  LEFT JOIN {{ source('PlantControlGianyarDps', 'conversions_table') }} conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM
+  LEFT JOIN {{ ref('conversions_table') }} conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM
 WHERE cop.ue_ItemType = 'Item'
 UNION ALL
-SELECT 
+SELECT DISTINCT 
   'ACTUAL' AS CopType,
   'PROD' AS TransType,
   cop.site AS Site,
@@ -448,12 +448,12 @@ SELECT
   header.ue_ItemDesc AS ItemDesc,
   cop.ue_ItemDesc AS ItemChildDesc,
   cop.ue_ItemType AS ItemType,
-  NULL AS ItemOverview,
+  '' AS ItemOverview,
   cop.ue_UM AS Um,
-  NULL AS InvoiceNum,
+  '' AS InvoiceNum,
   conv.Convertion AS ConvFactor,
-  NULL AS ConvUn,
-  NULL AS ExchRate,
+  '' AS ConvUn,
+  '' AS ExchRate,
   cop.ue_Job AS Job,
   CASE
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('PCK') AND cop.ue_ItemType = 'Material' THEN 'Packaging'
@@ -484,11 +484,11 @@ SELECT
   cop.ue_Item AS ItemChild,
   cop.ue_CustNum AS CustomerNum,
   cop.ue_CustName AS CustomerName,
-  0 as ProdQty,
+  CAST(0 AS FLOAT64) AS ProdQty,
   cop.ue_qty as ProdQtyChild,
   header.ue_Qty AS ProdQtyAvg,
-  0 as SalesQtyPcs,
-  0 as SalesQty,
+  CAST(0 AS FLOAT64) as SalesQtyPcs,
+  CAST(0 AS FLOAT64) as SalesQty,
   cop.ue_TotalMaterialCost as COPMaterial,
   cop.ue_TotalLaborCost as COPLabor,
   cop.ue_TotalFovhdCost as COPFixOH,
@@ -496,18 +496,18 @@ SELECT
   cop.ue_OutsideCost AS COPOutSide,
   cop.ue_TotalOutsideCost AS COPTotalOutSide,
   cop.ue_TotalCost AS COPTotal,
-  NULL AS CurrCode,
-  0 AS SalesGross,
-  0 as DiscountUnit,
-  0 AS SalesNett,
-  0 AS SalesNettDomestic,
-  0 AS COGSDomestic,
-  0 AS COGSLabourSC,
-  0 AS COGSMaterialSC,
-  0 AS COGSFixOHSC,
-  0 AS COGSVarOHSC,
-  0 AS COGSOutSideSC,
-  0 AS COGSTotalSC,
+  '' AS CurrCode,
+  CAST(0 AS FLOAT64) AS SalesGross,
+  CAST(0 AS FLOAT64) as DiscountUnit,
+  CAST(0 AS FLOAT64) AS SalesNett,
+  CAST(0 AS FLOAT64) AS SalesNettDomestic,
+  CAST(0 AS FLOAT64) AS COGSDomestic,
+  CAST(0 AS FLOAT64) AS COGSLabourSC,
+  CAST(0 AS FLOAT64) AS COGSMaterialSC,
+  CAST(0 AS FLOAT64) AS COGSFixOHSC,
+  CAST(0 AS FLOAT64) AS COGSVarOHSC,
+  CAST(0 AS FLOAT64) AS COGSOutSideSC,
+  CAST(0 AS FLOAT64) AS COGSTotalSC,
   cop.ue_LaborCost AS LaborCost,
   cop.ue_MaterialCost AS MaterialCost,
   cop.ue_fovhdCost AS FixOHCost,
@@ -515,35 +515,35 @@ SELECT
   cop.ue_ProductCode AS ProductCode,
   cop.ue_suffix AS Suffix,
   cop.ue_WC AS WorkCenter,
-  cop.month_year AS MonthYear,
-  NULL AS Resource,
+  '' AS MonthYear,
+  '' AS Resource,
   jobs.whse AS Warehouse,
   matl.ue_UpdatedBy AS UpdatedBy
-FROM {{ source ('mp_infor', 'cost_of_production_jmbr_new') }} cop
-  LEFT JOIN {{ source ('mp_infor', 'cost_of_production_jmbr_new') }} header ON cop.ue_Job = header.ue_Job 
-                                                          AND header.ue_ItemType = 'Item'
-  LEFT JOIN {{ source ('mp_infor', 'Jobs') }} jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
+FROM {{ source('mp_infor', 'cost_of_production_jmbr_new') }} cop
+  LEFT JOIN {{ source('mp_infor', 'cost_of_production_jmbr_new') }} header ON cop.ue_Job = header.ue_Job 
+                                                                           AND header.ue_ItemType = 'Item'
+  LEFT JOIN {{ source('mp_infor', 'Jobs') }} jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
   LEFT JOIN {{ source('PlantControlGianyarDps', 'JO_PostedBy') }} matl ON cop.ue_Job = matl.RefNum
-  LEFT JOIN {{ source('PlantControlGianyarDps', 'conversions_table') }} conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM
+  LEFT JOIN {{ ref('conversions_table') }} conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM
 WHERE cop.ue_ItemType <> 'Item'
 UNION ALL
 --END ACTUAL JEMBRANA--
 
 --ABSORB MP--
-SELECT 
+SELECT DISTINCT 
   'ABSORB' AS CopType,
   'PROD' AS TransType,
   cop.site AS Site,
   cop.ue_Item AS Item,
   cop.ue_ItemDesc AS ItemDesc,
-  NULL AS ItemChildDesc,
+  '' AS ItemChildDesc,
   cop.ue_ItemType AS ItemType,
-  NULL AS ItemOverview,
+  '' AS ItemOverview,
   cop.ue_UM AS Um,
-  NULL AS InvoiceNum,
+  '' AS InvoiceNum,
   conv.Convertion AS ConvFactor,
-  NULL AS ConvUn,
-  NULL AS ExchRate,
+  '' AS ConvUn,
+  '' AS ExchRate,
   cop.ue_Job AS Job,
   CASE
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('PCK') AND cop.ue_ItemType = 'Material' THEN 'Packaging'
@@ -570,15 +570,15 @@ SELECT
   END AS Category,
   cop.ue_WCDesc as WCDesc,
   cop.ue_ProdCodeDesc as ProdCodeDesc,
-  (SELECT MAX(ue_TransDate) FROM {{ source ('mp_infor', 'cost_of_production_mp_new') }} WHERE ue_Job = cop.ue_job AND ue_OperNum = cop.ue_OperNum AND ue_Suffix = cop.ue_Suffix) as Date,
-  NULL AS ItemChild,
+  (SELECT DISTINCT MAX(ue_TransDate) FROM `mp_infor.cost_of_production_mp_new` WHERE ue_Job = cop.ue_job AND ue_OperNum = cop.ue_OperNum AND ue_Suffix = cop.ue_Suffix) as Date,
+  '' AS ItemChild,
   cop.ue_CustNum AS CustomerNum,
   cop.ue_CustName AS CustomerName,
   cop.ue_Qty as ProdQty,
   0 as ProdQtyChild,
   cop.ue_Qty AS ProdQtyAvg,
-  0 as SalesQtyPcs,
-  0 as SalesQty,
+  CAST(0 AS FLOAT64) as SalesQtyPcs,
+  CAST(0 AS FLOAT64) as SalesQty,
   cop.ue_TotalMaterialCost as COPMaterial,
   cop.ue_TotalLaborCost as COPLabor,
   cop.ue_TotalFovhdCost as COPFixOH,
@@ -586,18 +586,18 @@ SELECT
   cop.ue_OutsideCost AS COPOutSide,
   cop.ue_TotalOutsideCost AS COPTotalOutSide,
   cop.ue_TotalCost AS COPTotal,
-  NULL AS CurrCode,
-  0 AS SalesGross,
-  0 as DiscountUnit,
-  0 AS SalesNett,
-  0 AS SalesNettDomestic,
-  0 AS COGSDomestic,
-  0 AS COGSLabourSC,
-  0 AS COGSMaterialSC,
-  0 AS COGSFixOHSC,
-  0 AS COGSVarOHSC,
-  0 AS COGSOutSideSC,
-  0 AS COGSTotalSC,
+  '' AS CurrCode,
+  CAST(0 AS FLOAT64) AS SalesGross,
+  CAST(0 AS FLOAT64) as DiscountUnit,
+  CAST(0 AS FLOAT64) AS SalesNett,
+  CAST(0 AS FLOAT64) AS SalesNettDomestic,
+  CAST(0 AS FLOAT64) AS COGSDomestic,
+  CAST(0 AS FLOAT64) AS COGSLabourSC,
+  CAST(0 AS FLOAT64) AS COGSMaterialSC,
+  CAST(0 AS FLOAT64) AS COGSFixOHSC,
+  CAST(0 AS FLOAT64) AS COGSVarOHSC,
+  CAST(0 AS FLOAT64) AS COGSOutSideSC,
+  CAST(0 AS FLOAT64) AS COGSTotalSC,
   cop.ue_LaborCost AS LaborCost,
   cop.ue_MaterialCost AS MaterialCost,
   cop.ue_fovhdCost AS FixOHCost,
@@ -605,17 +605,17 @@ SELECT
   cop.ue_ProductCode AS ProductCode,
   cop.ue_suffix AS Suffix,
   cop.ue_WC AS WorkCenter,
-  cop.month_year AS MonthYear,
-  NULL AS Resource,
+  '' AS MonthYear,
+  '' AS Resource,
   jobs.whse AS Warehouse,
   matl.ue_UpdatedBy AS UpdatedBy
-FROM {{ source ('mp_infor', 'material_usage_mp_new') }} cop
-  LEFT JOIN {{ source ('mp_infor', 'Jobs') }} jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
+FROM {{ source('mp_infor', 'material_usage_mp_new') }} cop
+  LEFT JOIN {{ source('mp_infor', 'Jobs') }} jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
   LEFT JOIN {{ source('PlantControlGianyarDps', 'JO_PostedBy') }} matl ON cop.ue_Job = matl.RefNum
-  LEFT JOIN {{ source('PlantControlGianyarDps', 'conversions_table') }} conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM
+  LEFT JOIN {{ ref('conversions_table') }} conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM
 WHERE cop.ue_ItemType = 'Item'
 UNION ALL
-SELECT 
+SELECT DISTINCT 
   'ABSORB' AS CopType,
   'PROD' AS TransType,
   cop.site AS Site,
@@ -623,12 +623,12 @@ SELECT
   header.ue_ItemDesc AS ItemDesc,
   cop.ue_ItemDesc AS ItemChildDesc,
   cop.ue_ItemType AS ItemType,
-  NULL AS ItemOverview,
+  '' AS ItemOverview,
   cop.ue_UM AS Um,
-  NULL AS InvoiceNum,
+  '' AS InvoiceNum,
   conv.Convertion AS ConvFactor,
-  NULL AS ConvUn,
-  NULL AS ExchRate,
+  '' AS ConvUn,
+  '' AS ExchRate,
   cop.ue_Job AS Job,
   CASE
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('PCK') AND cop.ue_ItemType = 'Material' THEN 'Packaging'
@@ -655,15 +655,15 @@ SELECT
   END AS Category,
   cop.ue_WCDesc as WCDesc,
   cop.ue_ProdCodeDesc as ProdCodeDesc,
-  (SELECT MAX(ue_TransDate) FROM {{ source ('mp_infor', 'cost_of_production_mp_new') }} WHERE ue_Job = cop.ue_job AND ue_OperNum = cop.ue_OperNum AND ue_Suffix = cop.ue_Suffix) as Date,
+  (SELECT DISTINCT MAX(ue_TransDate) FROM `mp_infor.cost_of_production_mp_new` WHERE ue_Job = cop.ue_job AND ue_OperNum = cop.ue_OperNum AND ue_Suffix = cop.ue_Suffix) as Date,
   cop.ue_Item AS ItemChild,
   cop.ue_CustNum AS CustomerNum,
   cop.ue_CustName AS CustomerName,
-  0 as ProdQty,
+  CAST(0 AS FLOAT64) AS ProdQty,
   cop.ue_qty as ProdQtyChild,
   header.ue_Qty AS ProdQtyAvg,
-  0 as SalesQtyPcs,
-  0 as SalesQty,
+  CAST(0 AS FLOAT64) as SalesQtyPcs,
+  CAST(0 AS FLOAT64) as SalesQty,
   cop.ue_TotalMaterialCost as COPMaterial,
   cop.ue_TotalLaborCost as COPLabor,
   cop.ue_TotalFovhdCost as COPFixOH,
@@ -671,18 +671,18 @@ SELECT
   cop.ue_OutsideCost AS COPOutSide,
   cop.ue_TotalOutsideCost AS COPTotalOutSide,
   cop.ue_TotalCost AS COPTotal,
-  NULL AS CurrCode,
-  0 AS SalesGross,
-  0 as DiscountUnit,
-  0 AS SalesNett,
-  0 AS SalesNettDomestic,
-  0 AS COGSDomestic,
-  0 AS COGSLabourSC,
-  0 AS COGSMaterialSC,
-  0 AS COGSFixOHSC,
-  0 AS COGSVarOHSC,
-  0 AS COGSOutSideSC,
-  0 AS COGSTotalSC,
+  '' AS CurrCode,
+  CAST(0 AS FLOAT64) AS SalesGross,
+  CAST(0 AS FLOAT64) as DiscountUnit,
+  CAST(0 AS FLOAT64) AS SalesNett,
+  CAST(0 AS FLOAT64) AS SalesNettDomestic,
+  CAST(0 AS FLOAT64) AS COGSDomestic,
+  CAST(0 AS FLOAT64) AS COGSLabourSC,
+  CAST(0 AS FLOAT64) AS COGSMaterialSC,
+  CAST(0 AS FLOAT64) AS COGSFixOHSC,
+  CAST(0 AS FLOAT64) AS COGSVarOHSC,
+  CAST(0 AS FLOAT64) AS COGSOutSideSC,
+  CAST(0 AS FLOAT64) AS COGSTotalSC,
   cop.ue_LaborCost AS LaborCost,
   cop.ue_MaterialCost AS MaterialCost,
   cop.ue_fovhdCost AS FixOHCost,
@@ -690,35 +690,35 @@ SELECT
   cop.ue_ProductCode AS ProductCode,
   cop.ue_suffix AS Suffix,
   cop.ue_WC AS WorkCenter,
-  cop.month_year AS MonthYear,
-  NULL AS Resource,
+  '' AS MonthYear,
+  '' AS Resource,
   jobs.whse AS Warehouse,
   matl.ue_UpdatedBy AS UpdatedBy
-FROM {{ source ('mp_infor', 'material_usage_mp_new') }} cop
-  LEFT JOIN {{ source ('mp_infor', 'material_usage_mp_new') }} header ON cop.ue_Job = header.ue_Job 
-                                                    AND header.ue_ItemType = 'Item'
-  LEFT JOIN {{ source ('mp_infor', 'Jobs') }} jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
+FROM {{ source('mp_infor', 'material_usage_mp_new') }} cop
+  LEFT JOIN {{ source('mp_infor', 'material_usage_mp_new') }} header ON cop.ue_Job = header.ue_Job 
+                                                                     AND header.ue_ItemType = 'Item'
+  LEFT JOIN {{ source('mp_infor', 'Jobs') }} jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
   LEFT JOIN {{ source('PlantControlGianyarDps', 'JO_PostedBy') }} matl ON cop.ue_Job = matl.RefNum       
-  LEFT JOIN {{ source('PlantControlGianyarDps', 'conversions_table') }} conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM                                      
+  LEFT JOIN {{ ref('conversions_table') }} conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM                                      
 WHERE cop.ue_ItemType <> 'Item'
 UNION ALL
 --END ABSORB MP--
 
 --ABSORB MPKB--
-SELECT 
+SELECT DISTINCT 
   'ABSORB' AS CopType,
   'PROD' AS TransType,
   cop.site AS Site,
   cop.ue_Item AS Item,
   cop.ue_ItemDesc AS ItemDesc,
-  NULL AS ItemChildDesc,
+  '' AS ItemChildDesc,
   cop.ue_ItemType AS ItemType,
-  NULL AS ItemOverview,
+  '' AS ItemOverview,
   cop.ue_UM AS Um,
-  NULL AS InvoiceNum,
+  '' AS InvoiceNum,
   conv.Convertion AS ConvFactor,
-  NULL AS ConvUn,
-  NULL AS ExchRate,
+  '' AS ConvUn,
+  '' AS ExchRate,
   cop.ue_Job AS Job,
   CASE
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('PCK') AND cop.ue_ItemType = 'Material' THEN 'Packaging'
@@ -745,15 +745,15 @@ SELECT
   END AS Category,
   cop.ue_WCDesc as WCDesc,
   cop.ue_ProdCodeDesc as ProdCodeDesc,
-  (SELECT MAX(ue_TransDate) FROM {{ source ('mp_infor', 'cost_of_production_mpkb_new') }} WHERE ue_Job = cop.ue_job AND ue_OperNum = cop.ue_OperNum AND ue_Suffix = cop.ue_Suffix) as Date,
-  NULL AS ItemChild,
+  (SELECT DISTINCT MAX(ue_TransDate) FROM `mp_infor.cost_of_production_mpkb_new` WHERE ue_Job = cop.ue_job AND ue_OperNum = cop.ue_OperNum AND ue_Suffix = cop.ue_Suffix) as Date,
+  '' AS ItemChild,
   cop.ue_CustNum AS CustomerNum,
   cop.ue_CustName AS CustomerName,
   cop.ue_Qty as ProdQty,
   0 as ProdQtyChild,
   cop.ue_Qty AS ProdQtyAvg,
-  0 as SalesQtyPcs,
-  0 as SalesQty,
+  CAST(0 AS FLOAT64) as SalesQtyPcs,
+  CAST(0 AS FLOAT64) as SalesQty,
   cop.ue_TotalMaterialCost as COPMaterial,
   cop.ue_TotalLaborCost as COPLabor,
   cop.ue_TotalFovhdCost as COPFixOH,
@@ -761,18 +761,18 @@ SELECT
   cop.ue_OutsideCost AS COPOutSide,
   cop.ue_TotalOutsideCost AS COPTotalOutSide,
   cop.ue_TotalCost AS COPTotal,
-  NULL AS CurrCode,
-  0 AS SalesGross,
-  0 as DiscountUnit,
-  0 AS SalesNett,
-  0 AS SalesNettDomestic,
-  0 AS COGSDomestic,
-  0 AS COGSLabourSC,
-  0 AS COGSMaterialSC,
-  0 AS COGSFixOHSC,
-  0 AS COGSVarOHSC,
-  0 AS COGSOutSideSC,
-  0 AS COGSTotalSC,
+  '' AS CurrCode,
+  CAST(0 AS FLOAT64) AS SalesGross,
+  CAST(0 AS FLOAT64) as DiscountUnit,
+  CAST(0 AS FLOAT64) AS SalesNett,
+  CAST(0 AS FLOAT64) AS SalesNettDomestic,
+  CAST(0 AS FLOAT64) AS COGSDomestic,
+  CAST(0 AS FLOAT64) AS COGSLabourSC,
+  CAST(0 AS FLOAT64) AS COGSMaterialSC,
+  CAST(0 AS FLOAT64) AS COGSFixOHSC,
+  CAST(0 AS FLOAT64) AS COGSVarOHSC,
+  CAST(0 AS FLOAT64) AS COGSOutSideSC,
+  CAST(0 AS FLOAT64) AS COGSTotalSC,
   cop.ue_LaborCost AS LaborCost,
   cop.ue_MaterialCost AS MaterialCost,
   cop.ue_fovhdCost AS FixOHCost,
@@ -780,17 +780,17 @@ SELECT
   cop.ue_ProductCode AS ProductCode,
   cop.ue_suffix AS Suffix,
   cop.ue_WC AS WorkCenter,
-  cop.month_year AS MonthYear,
-  NULL AS Resource,
+  '' AS MonthYear,
+  '' AS Resource,
   jobs.whse AS Warehouse,
   matl.ue_UpdatedBy AS UpdatedBy
-FROM {{ source ('mp_infor', 'material_usage_mpkb_new') }} cop
-  LEFT JOIN {{ source ('mp_infor', 'Jobs') }} jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
+FROM {{ source('mp_infor', 'material_usage_mp_new') }} cop
+  LEFT JOIN {{ source('mp_infor', 'Jobs') }} jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
   LEFT JOIN {{ source('PlantControlGianyarDps', 'JO_PostedBy') }} matl ON cop.ue_Job = matl.RefNum
-  LEFT JOIN {{ source('PlantControlGianyarDps', 'conversions_table') }} conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM
+  LEFT JOIN {{ ref('conversions_table') }} conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM
 WHERE cop.ue_ItemType = 'Item'
 UNION ALL
-SELECT 
+SELECT DISTINCT 
   'ABSORB' AS CopType,
   'PROD' AS TransType,
   cop.site AS Site,
@@ -798,12 +798,12 @@ SELECT
   header.ue_ItemDesc AS ItemDesc,
   cop.ue_ItemDesc AS ItemChildDesc,
   cop.ue_ItemType AS ItemType,
-  NULL AS ItemOverview,
+  '' AS ItemOverview,
   cop.ue_UM AS Um,
-  NULL AS InvoiceNum,
+  '' AS InvoiceNum,
   conv.Convertion AS ConvFactor,
-  NULL AS ConvUn,
-  NULL AS ExchRate,
+  '' AS ConvUn,
+  '' AS ExchRate,
   cop.ue_Job AS Job,
   CASE
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('PCK') AND cop.ue_ItemType = 'Material' THEN 'Packaging'
@@ -830,15 +830,15 @@ SELECT
   END AS Category,
   cop.ue_WCDesc as WCDesc,
   cop.ue_ProdCodeDesc as ProdCodeDesc,
-  (SELECT MAX(ue_TransDate) FROM {{ source ('mp_infor', 'cost_of_production_mpkb_new') }} WHERE ue_Job = cop.ue_job AND ue_OperNum = cop.ue_OperNum AND ue_Suffix = cop.ue_Suffix) as Date,
+  (SELECT DISTINCT MAX(ue_TransDate) FROM `mp_infor.cost_of_production_mpkb_new` WHERE ue_Job = cop.ue_job AND ue_OperNum = cop.ue_OperNum AND ue_Suffix = cop.ue_Suffix) as Date,
   cop.ue_Item AS ItemChild,
   cop.ue_CustNum AS CustomerNum,
   cop.ue_CustName AS CustomerName,
-  0 as ProdQty,
+  CAST(0 AS FLOAT64) AS ProdQty,
   cop.ue_qty as ProdQtyChild,
   header.ue_Qty AS ProdQtyAvg,
-  0 as SalesQtyPcs,
-  0 as SalesQty,
+  CAST(0 AS FLOAT64) as SalesQtyPcs,
+  CAST(0 AS FLOAT64) as SalesQty,
   cop.ue_TotalMaterialCost as COPMaterial,
   cop.ue_TotalLaborCost as COPLabor,
   cop.ue_TotalFovhdCost as COPFixOH,
@@ -846,18 +846,18 @@ SELECT
   cop.ue_OutsideCost AS COPOutSide,
   cop.ue_TotalOutsideCost AS COPTotalOutSide,
   cop.ue_TotalCost AS COPTotal,
-  NULL AS CurrCode,
-  0 AS SalesGross,
-  0 as DiscountUnit,
-  0 AS SalesNett,
-  0 AS SalesNettDomestic,
-  0 AS COGSDomestic,
-  0 AS COGSLabourSC,
-  0 AS COGSMaterialSC,
-  0 AS COGSFixOHSC,
-  0 AS COGSVarOHSC,
-  0 AS COGSOutSideSC,
-  0 AS COGSTotalSC,
+  '' AS CurrCode,
+  CAST(0 AS FLOAT64) AS SalesGross,
+  CAST(0 AS FLOAT64) as DiscountUnit,
+  CAST(0 AS FLOAT64) AS SalesNett,
+  CAST(0 AS FLOAT64) AS SalesNettDomestic,
+  CAST(0 AS FLOAT64) AS COGSDomestic,
+  CAST(0 AS FLOAT64) AS COGSLabourSC,
+  CAST(0 AS FLOAT64) AS COGSMaterialSC,
+  CAST(0 AS FLOAT64) AS COGSFixOHSC,
+  CAST(0 AS FLOAT64) AS COGSVarOHSC,
+  CAST(0 AS FLOAT64) AS COGSOutSideSC,
+  CAST(0 AS FLOAT64) AS COGSTotalSC,
   cop.ue_LaborCost AS LaborCost,
   cop.ue_MaterialCost AS MaterialCost,
   cop.ue_fovhdCost AS FixOHCost,
@@ -865,35 +865,35 @@ SELECT
   cop.ue_ProductCode AS ProductCode,
   cop.ue_suffix AS Suffix,
   cop.ue_WC AS WorkCenter,
-  cop.month_year AS MonthYear,
-  NULL AS Resource,
+  '' AS MonthYear,
+  '' AS Resource,
   jobs.whse AS Warehouse,
   matl.ue_UpdatedBy AS UpdatedBy
-FROM {{ source ('mp_infor', 'material_usage_mpkb_new') }} cop
-  LEFT JOIN {{ source ('mp_infor', 'material_usage_mpkb_new') }} header ON cop.ue_Job = header.ue_Job 
+FROM {{ source('mp_infor', 'material_usage_mp_new') }} cop
+  LEFT JOIN {{ source('mp_infor', 'material_usage_mp_new') }} header ON cop.ue_Job = header.ue_Job 
                                                       AND header.ue_ItemType = 'Item'
-  LEFT JOIN {{ source ('mp_infor', 'Jobs') }} jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
+  LEFT JOIN {{ source('mp_infor', 'Jobs') }} jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
   LEFT JOIN {{ source('PlantControlGianyarDps', 'JO_PostedBy') }} matl ON cop.ue_Job = matl.RefNum
-  LEFT JOIN {{ source('PlantControlGianyarDps', 'conversions_table') }} conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM
+  LEFT JOIN {{ ref('conversions_table') }} conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM
 WHERE cop.ue_ItemType <> 'Item'
 UNION ALL
 --END ABSORB MPKB--
 
 --ABSORB JEMBRANA--
-SELECT 
+SELECT DISTINCT 
   'ABSORB' AS CopType,
   'PROD' AS TransType,
   cop.site AS Site,
   cop.ue_Item AS Item,
   cop.ue_ItemDesc AS ItemDesc,
-  NULL AS ItemChildDesc,
+  '' AS ItemChildDesc,
   cop.ue_ItemType AS ItemType,
-  NULL AS ItemOverview,
+  '' AS ItemOverview,
   cop.ue_UM AS Um,
-  NULL AS InvoiceNum,
+  '' AS InvoiceNum,
   conv.Convertion AS ConvFactor,
-  NULL AS ConvUn,
-  NULL AS ExchRate,
+  '' AS ConvUn,
+  '' AS ExchRate,
   cop.ue_Job AS Job,
   CASE
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('PCK') AND cop.ue_ItemType = 'Material' THEN 'Packaging'
@@ -920,15 +920,15 @@ SELECT
   END AS Category,
   cop.ue_WCDesc as WCDesc,
   cop.ue_ProdCodeDesc as ProdCodeDesc,
-  (SELECT MAX(ue_TransDate) FROM `mp_infor.cost_of_production_jmbr_new` WHERE ue_Job = cop.ue_job AND ue_OperNum = cop.ue_OperNum AND ue_Suffix = cop.ue_Suffix) as Date,
-  NULL AS ItemChild,
+  (SELECT DISTINCT MAX(ue_TransDate) FROM `mp_infor.cost_of_production_jmbr_new` WHERE ue_Job = cop.ue_job AND ue_OperNum = cop.ue_OperNum AND ue_Suffix = cop.ue_Suffix) as Date,
+  '' AS ItemChild,
   cop.ue_CustNum AS CustomerNum,
   cop.ue_CustName AS CustomerName,
   cop.ue_Qty as ProdQty,
   0 as ProdQtyChild,
   cop.ue_Qty AS ProdQtyAvg,
-  0 as SalesQtyPcs,
-  0 as SalesQty,
+  CAST(0 AS FLOAT64) as SalesQtyPcs,
+  CAST(0 AS FLOAT64) as SalesQty,
   cop.ue_TotalMaterialCost as COPMaterial,
   cop.ue_TotalLaborCost as COPLabor,
   cop.ue_TotalFovhdCost as COPFixOH,
@@ -936,18 +936,18 @@ SELECT
   cop.ue_OutsideCost AS COPOutSide,
   cop.ue_TotalOutsideCost AS COPTotalOutSide,
   cop.ue_TotalCost AS COPTotal,
-  NULL AS CurrCode,
-  0 AS SalesGross,
-  0 as DiscountUnit,
-  0 AS SalesNett,
-  0 AS SalesNettDomestic,
-  0 AS COGSDomestic,
-  0 AS COGSLabourSC,
-  0 AS COGSMaterialSC,
-  0 AS COGSFixOHSC,
-  0 AS COGSVarOHSC,
-  0 AS COGSOutSideSC,
-  0 AS COGSTotalSC,
+  '' AS CurrCode,
+  CAST(0 AS FLOAT64) AS SalesGross,
+  CAST(0 AS FLOAT64) as DiscountUnit,
+  CAST(0 AS FLOAT64) AS SalesNett,
+  CAST(0 AS FLOAT64) AS SalesNettDomestic,
+  CAST(0 AS FLOAT64) AS COGSDomestic,
+  CAST(0 AS FLOAT64) AS COGSLabourSC,
+  CAST(0 AS FLOAT64) AS COGSMaterialSC,
+  CAST(0 AS FLOAT64) AS COGSFixOHSC,
+  CAST(0 AS FLOAT64) AS COGSVarOHSC,
+  CAST(0 AS FLOAT64) AS COGSOutSideSC,
+  CAST(0 AS FLOAT64) AS COGSTotalSC,
   cop.ue_LaborCost AS LaborCost,
   cop.ue_MaterialCost AS MaterialCost,
   cop.ue_fovhdCost AS FixOHCost,
@@ -955,17 +955,17 @@ SELECT
   cop.ue_ProductCode AS ProductCode,
   cop.ue_suffix AS Suffix,
   cop.ue_WC AS WorkCenter,
-  cop.month_year AS MonthYear,
-  NULL AS Resource,
+  '' AS MonthYear,
+  '' AS Resource,
   jobs.whse AS Warehouse,
   matl.ue_UpdatedBy AS UpdatedBy
-FROM `mp_infor.material_usage_jmbr_new` cop
-  LEFT JOIN `mp_infor.Jobs` jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
-  LEFT JOIN `mitraprodin-data-warehouse.PlantControlGianyarDps.JO_PostedBy` matl ON cop.ue_Job = matl.RefNum
-  LEFT JOIN `mitraprodin-data-warehouse.PlantControlGianyarDps.conversions_table ` conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM
+FROM {{ source('mp_infor', 'material_usage_jmbr_new') }} cop
+  LEFT JOIN {{ source('mp_infor', 'Jobs') }} jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
+  LEFT JOIN {{ source('PlantControlGianyarDps', 'JO_PostedBy') }} matl ON cop.ue_Job = matl.RefNum
+  LEFT JOIN {{ ref('conversions_table') }} conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM
 WHERE cop.ue_ItemType = 'Item'
 UNION ALL
-SELECT 
+SELECT DISTINCT 
   'ABSORB' AS CopType,
   'PROD' AS TransType,
   cop.site AS Site,
@@ -973,12 +973,12 @@ SELECT
   header.ue_ItemDesc AS ItemDesc,
   cop.ue_ItemDesc AS ItemChildDesc,
   cop.ue_ItemType AS ItemType,
-  NULL AS ItemOverview,
+  '' AS ItemOverview,
   cop.ue_UM AS Um,
-  NULL AS InvoiceNum,
+  '' AS InvoiceNum,
   conv.Convertion AS ConvFactor,
-  NULL AS ConvUn,
-  NULL AS ExchRate,
+  '' AS ConvUn,
+  '' AS ExchRate,
   cop.ue_Job AS Job,
   CASE
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('PCK') AND cop.ue_ItemType = 'Material' THEN 'Packaging'
@@ -1005,15 +1005,15 @@ SELECT
   END AS Category,
   cop.ue_WCDesc as WCDesc,
   cop.ue_ProdCodeDesc as ProdCodeDesc,
-  (SELECT MAX(ue_TransDate) FROM {{ source ('mp_infor', 'cost_of_production_jmbr_new') }} WHERE ue_Job = cop.ue_job AND ue_OperNum = cop.ue_OperNum AND ue_Suffix = cop.ue_Suffix) as Date,
+  (SELECT DISTINCT MAX(ue_TransDate) FROM `mp_infor.cost_of_production_jmbr_new` WHERE ue_Job = cop.ue_job AND ue_OperNum = cop.ue_OperNum AND ue_Suffix = cop.ue_Suffix) as Date,
   cop.ue_Item AS ItemChild,
   cop.ue_CustNum AS CustomerNum,
   cop.ue_CustName AS CustomerName,
-  0 as ProdQty,
+  CAST(0 AS FLOAT64) AS ProdQty,
   cop.ue_qty as ProdQtyChild,
   header.ue_Qty AS ProdQtyAvg,
-  0 as SalesQtyPcs,
-  0 as SalesQty,
+  CAST(0 AS FLOAT64) as SalesQtyPcs,
+  CAST(0 AS FLOAT64) as SalesQty,
   cop.ue_TotalMaterialCost as COPMaterial,
   cop.ue_TotalLaborCost as COPLabor,
   cop.ue_TotalFovhdCost as COPFixOH,
@@ -1021,18 +1021,18 @@ SELECT
   cop.ue_OutsideCost AS COPOutSide,
   cop.ue_TotalOutsideCost AS COPTotalOutSide,
   cop.ue_TotalCost AS COPTotal,
-  NULL AS CurrCode,
-  0 AS SalesGross,
-  0 as DiscountUnit,
-  0 AS SalesNett,
-  0 AS SalesNettDomestic,
-  0 AS COGSDomestic,
-  0 AS COGSLabourSC,
-  0 AS COGSMaterialSC,
-  0 AS COGSFixOHSC,
-  0 AS COGSVarOHSC,
-  0 AS COGSOutSideSC,
-  0 AS COGSTotalSC,
+  '' AS CurrCode,
+  CAST(0 AS FLOAT64) AS SalesGross,
+  CAST(0 AS FLOAT64) as DiscountUnit,
+  CAST(0 AS FLOAT64) AS SalesNett,
+  CAST(0 AS FLOAT64) AS SalesNettDomestic,
+  CAST(0 AS FLOAT64) AS COGSDomestic,
+  CAST(0 AS FLOAT64) AS COGSLabourSC,
+  CAST(0 AS FLOAT64) AS COGSMaterialSC,
+  CAST(0 AS FLOAT64) AS COGSFixOHSC,
+  CAST(0 AS FLOAT64) AS COGSVarOHSC,
+  CAST(0 AS FLOAT64) AS COGSOutSideSC,
+  CAST(0 AS FLOAT64) AS COGSTotalSC,
   cop.ue_LaborCost AS LaborCost,
   cop.ue_MaterialCost AS MaterialCost,
   cop.ue_fovhdCost AS FixOHCost,
@@ -1040,35 +1040,35 @@ SELECT
   cop.ue_ProductCode AS ProductCode,
   cop.ue_suffix AS Suffix,
   cop.ue_WC AS WorkCenter,
-  cop.month_year AS MonthYear,
-  NULL AS Resource,
+  '' AS MonthYear,
+  '' AS Resource,
   jobs.whse AS Warehouse,
   matl.ue_UpdatedBy AS UpdatedBy
-FROM `mp_infor.material_usage_jmbr_new` cop
-  LEFT JOIN `mp_infor.material_usage_jmbr_new` header ON cop.ue_Job = header.ue_Job 
+FROM {{ source('mp_infor', 'material_usage_jmbr_new') }} cop
+  LEFT JOIN {{ source('mp_infor', 'material_usage_jmbr_new') }} header ON cop.ue_Job = header.ue_Job 
                                                       AND header.ue_ItemType = 'Item'
-  LEFT JOIN `mp_infor.Jobs` jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
-  LEFT JOIN `mitraprodin-data-warehouse.PlantControlGianyarDps.JO_PostedBy` matl ON cop.ue_Job = matl.RefNum
-  LEFT JOIN `mitraprodin-data-warehouse.PlantControlGianyarDps.conversions_table ` conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM
+  LEFT JOIN {{ source('mp_infor', 'Jobs') }} jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
+  LEFT JOIN {{ source('PlantControlGianyarDps', 'JO_PostedBy') }} matl ON cop.ue_Job = matl.RefNum
+  LEFT JOIN {{ ref('conversions_table') }} conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM
 WHERE cop.ue_ItemType <> 'Item'
 UNION ALL
 --END ABSORB JEMBRANA--
 
 --PLAN MP--
-SELECT 
+SELECT DISTINCT 
   'PLAN' AS CopType,
   'PROD' AS TransType,
   cop.site AS Site,
   cop.ue_Item AS Item,
   cop.ue_ItemDesc AS ItemDesc,
-  NULL AS ItemChildDesc,
+  '' AS ItemChildDesc,
   cop.ue_ItemType AS ItemType,
-  NULL AS ItemOverview,
+  '' AS ItemOverview,
   cop.ue_UM AS Um,
-  NULL AS InvoiceNum,
+  '' AS InvoiceNum,
   conv.Convertion AS ConvFactor,
-  NULL AS ConvUn,
-  NULL AS ExchRate,
+  '' AS ConvUn,
+  '' AS ExchRate,
   cop.ue_Job AS Job,
   CASE
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('PCK') AND cop.ue_ItemType = 'Material' THEN 'Packaging'
@@ -1095,15 +1095,15 @@ SELECT
   END AS Category,
   cop.ue_WCDesc as WCDesc,
   cop.ue_ProdCodeDesc as ProdCodeDesc,
-  (SELECT MAX(ue_TransDate) FROM `mp_infor.cost_of_production_mp_new` WHERE ue_Job = cop.ue_job AND ue_OperNum = cop.ue_OperNum AND ue_Suffix = cop.ue_Suffix) as Date,
-  NULL AS ItemChild,
+  (SELECT DISTINCT MAX(ue_TransDate) FROM `mp_infor.cost_of_production_mp_new` WHERE ue_Job = cop.ue_job AND ue_OperNum = cop.ue_OperNum AND ue_Suffix = cop.ue_Suffix) as Date,
+  '' AS ItemChild,
   cop.ue_CustNum AS CustomerNum,
   cop.ue_CustName AS CustomerName,
   cop.ue_Qty as ProdQty,
   0 as ProdQtyChild,
   cop.ue_Qty AS ProdQtyAvg,
-  0 as SalesQtyPcs,
-  0 as SalesQty,
+  CAST(0 AS FLOAT64) as SalesQtyPcs,
+  CAST(0 AS FLOAT64) as SalesQty,
   cop.ue_TotalMaterialCost as COPMaterial,
   cop.ue_TotalLaborCost as COPLabor,
   cop.ue_TotalFovhdCost as COPFixOH,
@@ -1111,18 +1111,18 @@ SELECT
   cop.ue_OutsideCost AS COPOutSide,
   cop.ue_TotalOutsideCost AS COPTotalOutSide,
   cop.ue_TotalCost AS COPTotal,
-  NULL AS CurrCode,
-  0 AS SalesGross,
-  0 as DiscountUnit,
-  0 AS SalesNett,
-  0 AS SalesNettDomestic,
-  0 AS COGSDomestic,
-  0 AS COGSLabourSC,
-  0 AS COGSMaterialSC,
-  0 AS COGSFixOHSC,
-  0 AS COGSVarOHSC,
-  0 AS COGSOutSideSC,
-  0 AS COGSTotalSC,
+  '' AS CurrCode,
+  CAST(0 AS FLOAT64) AS SalesGross,
+  CAST(0 AS FLOAT64) as DiscountUnit,
+  CAST(0 AS FLOAT64) AS SalesNett,
+  CAST(0 AS FLOAT64) AS SalesNettDomestic,
+  CAST(0 AS FLOAT64) AS COGSDomestic,
+  CAST(0 AS FLOAT64) AS COGSLabourSC,
+  CAST(0 AS FLOAT64) AS COGSMaterialSC,
+  CAST(0 AS FLOAT64) AS COGSFixOHSC,
+  CAST(0 AS FLOAT64) AS COGSVarOHSC,
+  CAST(0 AS FLOAT64) AS COGSOutSideSC,
+  CAST(0 AS FLOAT64) AS COGSTotalSC,
   cop.ue_LaborCost AS LaborCost,
   cop.ue_MaterialCost AS MaterialCost,
   cop.ue_fovhdCost AS FixOHCost,
@@ -1130,17 +1130,17 @@ SELECT
   cop.ue_ProductCode AS ProductCode,
   cop.ue_suffix AS Suffix,
   cop.ue_WC AS WorkCenter,
-  cop.month_year AS MonthYear,
-  NULL AS Resource,
+  '' AS MonthYear,
+  '' AS Resource,
   jobs.whse AS Warehouse,
   matl.ue_UpdatedBy AS UpdatedBy
-FROM `mp_infor.cost_of_production_PLN_mp` cop
-  LEFT JOIN `mp_infor.Jobs` jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
-  LEFT JOIN `mitraprodin-data-warehouse.PlantControlGianyarDps.JO_PostedBy` matl ON cop.ue_Job = matl.RefNum
-  LEFT JOIN `mitraprodin-data-warehouse.PlantControlGianyarDps.conversions_table ` conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM
+FROM {{ source('mp_infor', 'cost_of_production_PLN_mp') }} cop
+  LEFT JOIN {{ source('mp_infor', 'Jobs') }} jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
+  LEFT JOIN {{ source('PlantControlGianyarDps', 'JO_PostedBy') }} matl ON cop.ue_Job = matl.RefNum
+  LEFT JOIN {{ ref('conversions_table') }} conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM
 WHERE cop.ue_ItemType = 'Item'
 UNION ALL
-SELECT 
+SELECT DISTINCT 
   'PLAN' AS CopType,
   'PROD' AS TransType,
   cop.site AS Site,
@@ -1148,12 +1148,12 @@ SELECT
   header.ue_ItemDesc AS ItemDesc,
   cop.ue_ItemDesc AS ItemChildDesc,
   cop.ue_ItemType AS ItemType,
-  NULL AS ItemOverview,
+  '' AS ItemOverview,
   cop.ue_UM AS Um,
-  NULL AS InvoiceNum,
+  '' AS InvoiceNum,
   conv.Convertion AS ConvFactor,
-  NULL AS ConvUn,
-  NULL AS ExchRate,
+  '' AS ConvUn,
+  '' AS ExchRate,
   cop.ue_Job AS Job,
   CASE
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('PCK') AND cop.ue_ItemType = 'Material' THEN 'Packaging'
@@ -1180,15 +1180,15 @@ SELECT
   END AS Category,
   cop.ue_WCDesc as WCDesc,
   cop.ue_ProdCodeDesc as ProdCodeDesc,
-  (SELECT MAX(ue_TransDate) FROM `mp_infor.cost_of_production_mp_new` WHERE ue_Job = cop.ue_job AND ue_OperNum = cop.ue_OperNum AND ue_Suffix = cop.ue_Suffix) as Date,
+  (SELECT DISTINCT MAX(ue_TransDate) FROM `mp_infor.cost_of_production_mp_new` WHERE ue_Job = cop.ue_job AND ue_OperNum = cop.ue_OperNum AND ue_Suffix = cop.ue_Suffix) as Date,
   cop.ue_Item AS ItemChild,
   cop.ue_CustNum AS CustomerNum,
   cop.ue_CustName AS CustomerName,
-  0 as ProdQty,
+  CAST(0 AS FLOAT64) AS ProdQty,
   cop.ue_qty as ProdQtyChild,
   header.ue_Qty AS ProdQtyAvg,
-  0 as SalesQtyPcs,
-  0 as SalesQty,
+  CAST(0 AS FLOAT64) as SalesQtyPcs,
+  CAST(0 AS FLOAT64) as SalesQty,
   cop.ue_TotalMaterialCost as COPMaterial,
   cop.ue_TotalLaborCost as COPLabor,
   cop.ue_TotalFovhdCost as COPFixOH,
@@ -1196,18 +1196,18 @@ SELECT
   cop.ue_OutsideCost AS COPOutSide,
   cop.ue_TotalOutsideCost AS COPTotalOutSide,
   cop.ue_TotalCost AS COPTotal,
-  NULL AS CurrCode,
-  0 AS SalesGross,
-  0 as DiscountUnit,
-  0 AS SalesNett,
-  0 AS SalesNettDomestic,
-  0 AS COGSDomestic,
-  0 AS COGSLabourSC,
-  0 AS COGSMaterialSC,
-  0 AS COGSFixOHSC,
-  0 AS COGSVarOHSC,
-  0 AS COGSOutSideSC,
-  0 AS COGSTotalSC,
+  '' AS CurrCode,
+  CAST(0 AS FLOAT64) AS SalesGross,
+  CAST(0 AS FLOAT64) as DiscountUnit,
+  CAST(0 AS FLOAT64) AS SalesNett,
+  CAST(0 AS FLOAT64) AS SalesNettDomestic,
+  CAST(0 AS FLOAT64) AS COGSDomestic,
+  CAST(0 AS FLOAT64) AS COGSLabourSC,
+  CAST(0 AS FLOAT64) AS COGSMaterialSC,
+  CAST(0 AS FLOAT64) AS COGSFixOHSC,
+  CAST(0 AS FLOAT64) AS COGSVarOHSC,
+  CAST(0 AS FLOAT64) AS COGSOutSideSC,
+  CAST(0 AS FLOAT64) AS COGSTotalSC,
   cop.ue_LaborCost AS LaborCost,
   cop.ue_MaterialCost AS MaterialCost,
   cop.ue_fovhdCost AS FixOHCost,
@@ -1215,35 +1215,35 @@ SELECT
   cop.ue_ProductCode AS ProductCode,
   cop.ue_suffix AS Suffix,
   cop.ue_WC AS WorkCenter,
-  cop.month_year AS MonthYear,
-  NULL AS Resource,
+  '' AS MonthYear,
+  '' AS Resource,
   jobs.whse AS Warehouse,
   matl.ue_UpdatedBy AS UpdatedBy
-FROM `mp_infor.cost_of_production_PLN_mp` cop
-  LEFT JOIN `mp_infor.cost_of_production_PLN_mp` header ON cop.ue_Job = header.ue_Job 
-                                                        AND header.ue_ItemType = 'Item'
-  LEFT JOIN `mp_infor.Jobs` jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
-  LEFT JOIN `mitraprodin-data-warehouse.PlantControlGianyarDps.JO_PostedBy` matl ON cop.ue_Job = matl.RefNum
-  LEFT JOIN `mitraprodin-data-warehouse.PlantControlGianyarDps.conversions_table ` conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM
+FROM {{ source('mp_infor', 'cost_of_production_PLN_mp') }} cop
+  LEFT JOIN {{ source('mp_infor', 'cost_of_production_PLN_mp') }} header ON cop.ue_Job = header.ue_Job 
+                                                                         AND header.ue_ItemType = 'Item'
+  LEFT JOIN {{ source('mp_infor', 'Jobs') }} jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
+  LEFT JOIN {{ source('PlantControlGianyarDps', 'JO_PostedBy') }} matl ON cop.ue_Job = matl.RefNum
+  LEFT JOIN {{ ref('conversions_table') }} conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM
 WHERE cop.ue_ItemType <> 'Item'
 UNION ALL
 --END PLAN MP--
 
 --PLAN MPKB--
-SELECT 
+SELECT DISTINCT 
   'PLAN' AS CopType,
   'PROD' AS TransType,
   cop.site AS Site,
   cop.ue_Item AS Item,
   cop.ue_ItemDesc AS ItemDesc,
-  NULL AS ItemChildDesc,
+  '' AS ItemChildDesc,
   cop.ue_ItemType AS ItemType,
-  NULL AS ItemOverview,
+  '' AS ItemOverview,
   cop.ue_UM AS Um,
-  NULL AS InvoiceNum,
+  '' AS InvoiceNum,
   conv.Convertion AS ConvFactor,
-  NULL AS ConvUn,
-  NULL AS ExchRate,
+  '' AS ConvUn,
+  '' AS ExchRate,
   cop.ue_Job AS Job,
   CASE
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('PCK') AND cop.ue_ItemType = 'Material' THEN 'Packaging'
@@ -1270,15 +1270,15 @@ SELECT
   END AS Category,
   cop.ue_WCDesc as WCDesc,
   cop.ue_ProdCodeDesc as ProdCodeDesc,
-  (SELECT MAX(ue_TransDate) FROM `mp_infor.cost_of_production_mpkb_new` WHERE ue_Job = cop.ue_job AND ue_OperNum = cop.ue_OperNum AND ue_Suffix = cop.ue_Suffix) as Date,
-  NULL AS ItemChild,
+  (SELECT DISTINCT MAX(ue_TransDate) FROM `mp_infor.cost_of_production_mpkb_new` WHERE ue_Job = cop.ue_job AND ue_OperNum = cop.ue_OperNum AND ue_Suffix = cop.ue_Suffix) as Date,
+  '' AS ItemChild,
   cop.ue_CustNum AS CustomerNum,
   cop.ue_CustName AS CustomerName,
   cop.ue_Qty as ProdQty,
   0 as ProdQtyChild,
   cop.ue_Qty AS ProdQtyAvg,
-  0 as SalesQtyPcs,
-  0 as SalesQty,
+  CAST(0 AS FLOAT64) as SalesQtyPcs,
+  CAST(0 AS FLOAT64) as SalesQty,
   cop.ue_TotalMaterialCost as COPMaterial,
   cop.ue_TotalLaborCost as COPLabor,
   cop.ue_TotalFovhdCost as COPFixOH,
@@ -1286,18 +1286,18 @@ SELECT
   cop.ue_OutsideCost AS COPOutSide,
   cop.ue_TotalOutsideCost AS COPTotalOutSide,
   cop.ue_TotalCost AS COPTotal,
-  NULL AS CurrCode,
-  0 AS SalesGross,
-  0 as DiscountUnit,
-  0 AS SalesNett,
-  0 AS SalesNettDomestic,
-  0 AS COGSDomestic,
-  0 AS COGSLabourSC,
-  0 AS COGSMaterialSC,
-  0 AS COGSFixOHSC,
-  0 AS COGSVarOHSC,
-  0 AS COGSOutSideSC,
-  0 AS COGSTotalSC,
+  '' AS CurrCode,
+  CAST(0 AS FLOAT64) AS SalesGross,
+  CAST(0 AS FLOAT64) as DiscountUnit,
+  CAST(0 AS FLOAT64) AS SalesNett,
+  CAST(0 AS FLOAT64) AS SalesNettDomestic,
+  CAST(0 AS FLOAT64) AS COGSDomestic,
+  CAST(0 AS FLOAT64) AS COGSLabourSC,
+  CAST(0 AS FLOAT64) AS COGSMaterialSC,
+  CAST(0 AS FLOAT64) AS COGSFixOHSC,
+  CAST(0 AS FLOAT64) AS COGSVarOHSC,
+  CAST(0 AS FLOAT64) AS COGSOutSideSC,
+  CAST(0 AS FLOAT64) AS COGSTotalSC,
   cop.ue_LaborCost AS LaborCost,
   cop.ue_MaterialCost AS MaterialCost,
   cop.ue_fovhdCost AS FixOHCost,
@@ -1305,17 +1305,17 @@ SELECT
   cop.ue_ProductCode AS ProductCode,
   cop.ue_suffix AS Suffix,
   cop.ue_WC AS WorkCenter,
-  cop.month_year AS MonthYear,
-  NULL AS Resource,
+  '' AS MonthYear,
+  '' AS Resource,
   jobs.whse AS Warehouse,
   matl.ue_UpdatedBy AS UpdatedBy
-FROM `mp_infor.cost_of_production_PLN_mpkb` cop
-  LEFT JOIN `mp_infor.Jobs` jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
-  LEFT JOIN `mitraprodin-data-warehouse.PlantControlGianyarDps.JO_PostedBy` matl ON cop.ue_Job = matl.RefNum
-  LEFT JOIN `mitraprodin-data-warehouse.PlantControlGianyarDps.conversions_table ` conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM
+FROM {{ source('mp_infor', 'cost_of_production_PLN_mpkb') }} cop
+  LEFT JOIN {{ source('mp_infor', 'Jobs') }} jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
+  LEFT JOIN {{ source('PlantControlGianyarDps', 'JO_PostedBy') }} matl ON cop.ue_Job = matl.RefNum
+  LEFT JOIN {{ ref('conversions_table') }} conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM
 WHERE cop.ue_ItemType = 'Item'
 UNION ALL
-SELECT 
+SELECT DISTINCT 
   'PLAN' AS CopType,
   'PROD' AS TransType,
   cop.site AS Site,
@@ -1323,12 +1323,12 @@ SELECT
   header.ue_ItemDesc AS ItemDesc,
   cop.ue_ItemDesc AS ItemChildDesc,
   cop.ue_ItemType AS ItemType,
-  NULL AS ItemOverview,
+  '' AS ItemOverview,
   cop.ue_UM AS Um,
-  NULL AS InvoiceNum,
+  '' AS InvoiceNum,
   conv.Convertion AS ConvFactor,
-  NULL AS ConvUn,
-  NULL AS ExchRate,
+  '' AS ConvUn,
+  '' AS ExchRate,
   cop.ue_Job AS Job,
   CASE
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('PCK') AND cop.ue_ItemType = 'Material' THEN 'Packaging'
@@ -1355,15 +1355,15 @@ SELECT
   END AS Category,
   cop.ue_WCDesc as WCDesc,
   cop.ue_ProdCodeDesc as ProdCodeDesc,
-  (SELECT MAX(ue_TransDate) FROM `mp_infor.cost_of_production_mpkb_new` WHERE ue_Job = cop.ue_job AND ue_OperNum = cop.ue_OperNum AND ue_Suffix = cop.ue_Suffix) as Date,
+  (SELECT DISTINCT MAX(ue_TransDate) FROM `mp_infor.cost_of_production_mpkb_new` WHERE ue_Job = cop.ue_job AND ue_OperNum = cop.ue_OperNum AND ue_Suffix = cop.ue_Suffix) as Date,
   cop.ue_Item AS ItemChild,
   cop.ue_CustNum AS CustomerNum,
   cop.ue_CustName AS CustomerName,
-  0 as ProdQty,
+  CAST(0 AS FLOAT64) AS ProdQty,
   cop.ue_qty as ProdQtyChild,
   header.ue_Qty AS ProdQtyAvg,
-  0 as SalesQtyPcs,
-  0 as SalesQty,
+  CAST(0 AS FLOAT64) as SalesQtyPcs,
+  CAST(0 AS FLOAT64) as SalesQty,
   cop.ue_TotalMaterialCost as COPMaterial,
   cop.ue_TotalLaborCost as COPLabor,
   cop.ue_TotalFovhdCost as COPFixOH,
@@ -1371,18 +1371,18 @@ SELECT
   cop.ue_OutsideCost AS COPOutSide,
   cop.ue_TotalOutsideCost AS COPTotalOutSide,
   cop.ue_TotalCost AS COPTotal,
-  NULL AS CurrCode,
-  0 AS SalesGross,
-  0 as DiscountUnit,
-  0 AS SalesNett,
-  0 AS SalesNettDomestic,
-  0 AS COGSDomestic,
-  0 AS COGSLabourSC,
-  0 AS COGSMaterialSC,
-  0 AS COGSFixOHSC,
-  0 AS COGSVarOHSC,
-  0 AS COGSOutSideSC,
-  0 AS COGSTotalSC,
+  '' AS CurrCode,
+  CAST(0 AS FLOAT64) AS SalesGross,
+  CAST(0 AS FLOAT64) as DiscountUnit,
+  CAST(0 AS FLOAT64) AS SalesNett,
+  CAST(0 AS FLOAT64) AS SalesNettDomestic,
+  CAST(0 AS FLOAT64) AS COGSDomestic,
+  CAST(0 AS FLOAT64) AS COGSLabourSC,
+  CAST(0 AS FLOAT64) AS COGSMaterialSC,
+  CAST(0 AS FLOAT64) AS COGSFixOHSC,
+  CAST(0 AS FLOAT64) AS COGSVarOHSC,
+  CAST(0 AS FLOAT64) AS COGSOutSideSC,
+  CAST(0 AS FLOAT64) AS COGSTotalSC,
   cop.ue_LaborCost AS LaborCost,
   cop.ue_MaterialCost AS MaterialCost,
   cop.ue_fovhdCost AS FixOHCost,
@@ -1390,35 +1390,35 @@ SELECT
   cop.ue_ProductCode AS ProductCode,
   cop.ue_suffix AS Suffix,
   cop.ue_WC AS WorkCenter,
-  cop.month_year AS MonthYear,
-  NULL AS Resource,
+  '' AS MonthYear,
+  '' AS Resource,
   jobs.whse AS Warehouse,
   matl.ue_UpdatedBy AS UpdatedBy
-FROM `mp_infor.cost_of_production_PLN_mpkb` cop
-  LEFT JOIN `mp_infor.cost_of_production_PLN_mpkb` header ON cop.ue_Job = header.ue_Job 
-                                                          AND header.ue_ItemType = 'Item'
-  LEFT JOIN `mp_infor.Jobs` jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
-  LEFT JOIN `mitraprodin-data-warehouse.PlantControlGianyarDps.JO_PostedBy` matl ON cop.ue_Job = matl.RefNum
-  LEFT JOIN `mitraprodin-data-warehouse.PlantControlGianyarDps.conversions_table ` conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM
+FROM {{ source('mp_infor', 'cost_of_production_PLN_mpkb') }} cop
+  LEFT JOIN {{ source('mp_infor', 'cost_of_production_PLN_mpkb') }} header ON cop.ue_Job = header.ue_Job 
+                                                                          AND header.ue_ItemType = 'Item'
+  LEFT JOIN {{ source('mp_infor', 'Jobs') }} jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
+  LEFT JOIN {{ source('PlantControlGianyarDps', 'JO_PostedBy') }} matl ON cop.ue_Job = matl.RefNum
+  LEFT JOIN {{ ref('conversions_table') }} conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM
 WHERE cop.ue_ItemType <> 'Item'
 UNION ALL
 --END PLAN MPKB--
 
 --PLAN JEMBRANA--
-SELECT 
+SELECT DISTINCT 
   'PLAN' AS CopType,
   'PROD' AS TransType,
   cop.site AS Site,
   cop.ue_Item AS Item,
   cop.ue_ItemDesc AS ItemDesc,
-  NULL AS ItemChildDesc,
+  '' AS ItemChildDesc,
   cop.ue_ItemType AS ItemType,
-  NULL AS ItemOverview,
+  '' AS ItemOverview,
   cop.ue_UM AS Um,
-  NULL AS InvoiceNum,
+  '' AS InvoiceNum,
   conv.Convertion AS ConvFactor,
-  NULL AS ConvUn,
-  NULL AS ExchRate,
+  '' AS ConvUn,
+  '' AS ExchRate,
   cop.ue_Job AS Job,
   CASE
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('PCK') AND cop.ue_ItemType = 'Material' THEN 'Packaging'
@@ -1445,15 +1445,15 @@ SELECT
   END AS Category,
   cop.ue_WCDesc as WCDesc,
   cop.ue_ProdCodeDesc as ProdCodeDesc,
-  (SELECT MAX(ue_TransDate) FROM `mp_infor.cost_of_production_jmbr_new` WHERE ue_Job = cop.ue_job AND ue_OperNum = cop.ue_OperNum AND ue_Suffix = cop.ue_Suffix) as Date,
-  NULL AS ItemChild,
+  (SELECT DISTINCT MAX(ue_TransDate) FROM `mp_infor.cost_of_production_jmbr_new` WHERE ue_Job = cop.ue_job AND ue_OperNum = cop.ue_OperNum AND ue_Suffix = cop.ue_Suffix) as Date,
+  '' AS ItemChild,
   cop.ue_CustNum AS CustomerNum,
   cop.ue_CustName AS CustomerName,
   cop.ue_Qty as ProdQty,
   0 as ProdQtyChild,
   cop.ue_Qty AS ProdQtyAvg,
-  0 as SalesQtyPcs,
-  0 as SalesQty,
+  CAST(0 AS FLOAT64) as SalesQtyPcs,
+  CAST(0 AS FLOAT64) as SalesQty,
   cop.ue_TotalMaterialCost as COPMaterial,
   cop.ue_TotalLaborCost as COPLabor,
   cop.ue_TotalFovhdCost as COPFixOH,
@@ -1461,18 +1461,18 @@ SELECT
   cop.ue_OutsideCost AS COPOutSide,
   cop.ue_TotalOutsideCost AS COPTotalOutSide,
   cop.ue_TotalCost AS COPTotal,
-  NULL AS CurrCode,
-  0 AS SalesGross,
-  0 as DiscountUnit,
-  0 AS SalesNett,
-  0 AS SalesNettDomestic,
-  0 AS COGSDomestic,
-  0 AS COGSLabourSC,
-  0 AS COGSMaterialSC,
-  0 AS COGSFixOHSC,
-  0 AS COGSVarOHSC,
-  0 AS COGSOutSideSC,
-  0 AS COGSTotalSC,
+  '' AS CurrCode,
+  CAST(0 AS FLOAT64) AS SalesGross,
+  CAST(0 AS FLOAT64) as DiscountUnit,
+  CAST(0 AS FLOAT64) AS SalesNett,
+  CAST(0 AS FLOAT64) AS SalesNettDomestic,
+  CAST(0 AS FLOAT64) AS COGSDomestic,
+  CAST(0 AS FLOAT64) AS COGSLabourSC,
+  CAST(0 AS FLOAT64) AS COGSMaterialSC,
+  CAST(0 AS FLOAT64) AS COGSFixOHSC,
+  CAST(0 AS FLOAT64) AS COGSVarOHSC,
+  CAST(0 AS FLOAT64) AS COGSOutSideSC,
+  CAST(0 AS FLOAT64) AS COGSTotalSC,
   cop.ue_LaborCost AS LaborCost,
   cop.ue_MaterialCost AS MaterialCost,
   cop.ue_fovhdCost AS FixOHCost,
@@ -1480,17 +1480,17 @@ SELECT
   cop.ue_ProductCode AS ProductCode,
   cop.ue_suffix AS Suffix,
   cop.ue_WC AS WorkCenter,
-  cop.month_year AS MonthYear,
-  NULL AS Resource,
+  '' AS MonthYear,
+  '' AS Resource,
   jobs.whse AS Warehouse,
   matl.ue_UpdatedBy AS UpdatedBy
-FROM `mp_infor.cost_of_production_PLN_jmbr` cop
-  LEFT JOIN `mp_infor.Jobs` jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
-  LEFT JOIN `mitraprodin-data-warehouse.PlantControlGianyarDps.JO_PostedBy` matl ON cop.ue_Job = matl.RefNum
-  LEFT JOIN `mitraprodin-data-warehouse.PlantControlGianyarDps.conversions_table ` conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM
+FROM {{ source('mp_infor', 'cost_of_production_PLN_jmbr') }} cop
+  LEFT JOIN {{ source('mp_infor', 'Jobs') }} jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
+  LEFT JOIN {{ source('PlantControlGianyarDps', 'JO_PostedBy') }} matl ON cop.ue_Job = matl.RefNum
+  LEFT JOIN {{ ref('conversions_table') }} conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM
 WHERE cop.ue_ItemType = 'Item'
 UNION ALL
-SELECT 
+SELECT DISTINCT 
   'PLAN' AS CopType,
   'PROD' AS TransType,
   cop.site AS Site,
@@ -1498,12 +1498,12 @@ SELECT
   header.ue_ItemDesc AS ItemDesc,
   cop.ue_ItemDesc AS ItemChildDesc,
   cop.ue_ItemType AS ItemType,
-  NULL AS ItemOverview,
+  '' AS ItemOverview,
   cop.ue_UM AS Um,
-  NULL AS InvoiceNum,
+  '' AS InvoiceNum,
   conv.Convertion AS ConvFactor,
-  NULL AS ConvUn,
-  NULL AS ExchRate,
+  '' AS ConvUn,
+  '' AS ExchRate,
   cop.ue_Job AS Job,
   CASE
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('PCK') AND cop.ue_ItemType = 'Material' THEN 'Packaging'
@@ -1530,15 +1530,15 @@ SELECT
   END AS Category,
   cop.ue_WCDesc as WCDesc,
   cop.ue_ProdCodeDesc as ProdCodeDesc,
-  (SELECT MAX(ue_TransDate) FROM `mp_infor.cost_of_production_jmbr_new` WHERE ue_Job = cop.ue_job AND ue_OperNum = cop.ue_OperNum AND ue_Suffix = cop.ue_Suffix) as Date,
+  (SELECT DISTINCT MAX(ue_TransDate) FROM `mp_infor.cost_of_production_jmbr_new` WHERE ue_Job = cop.ue_job AND ue_OperNum = cop.ue_OperNum AND ue_Suffix = cop.ue_Suffix) as Date,
   cop.ue_Item AS ItemChild,
   cop.ue_CustNum AS CustomerNum,
   cop.ue_CustName AS CustomerName,
-  0 as ProdQty,
+  CAST(0 AS FLOAT64) AS ProdQty,
   cop.ue_qty as ProdQtyChild,
   header.ue_Qty AS ProdQtyAvg,
-  0 as SalesQtyPcs,
-  0 as SalesQty,
+  CAST(0 AS FLOAT64) as SalesQtyPcs,
+  CAST(0 AS FLOAT64) as SalesQty,
   cop.ue_TotalMaterialCost as COPMaterial,
   cop.ue_TotalLaborCost as COPLabor,
   cop.ue_TotalFovhdCost as COPFixOH,
@@ -1546,18 +1546,18 @@ SELECT
   cop.ue_OutsideCost AS COPOutSide,
   cop.ue_TotalOutsideCost AS COPTotalOutSide,
   cop.ue_TotalCost AS COPTotal,
-  NULL AS CurrCode,
-  0 AS SalesGross,
-  0 as DiscountUnit,
-  0 AS SalesNett,
-  0 AS SalesNettDomestic,
-  0 AS COGSDomestic,
-  0 AS COGSLabourSC,
-  0 AS COGSMaterialSC,
-  0 AS COGSFixOHSC,
-  0 AS COGSVarOHSC,
-  0 AS COGSOutSideSC,
-  0 AS COGSTotalSC,
+  '' AS CurrCode,
+  CAST(0 AS FLOAT64) AS SalesGross,
+  CAST(0 AS FLOAT64) as DiscountUnit,
+  CAST(0 AS FLOAT64) AS SalesNett,
+  CAST(0 AS FLOAT64) AS SalesNettDomestic,
+  CAST(0 AS FLOAT64) AS COGSDomestic,
+  CAST(0 AS FLOAT64) AS COGSLabourSC,
+  CAST(0 AS FLOAT64) AS COGSMaterialSC,
+  CAST(0 AS FLOAT64) AS COGSFixOHSC,
+  CAST(0 AS FLOAT64) AS COGSVarOHSC,
+  CAST(0 AS FLOAT64) AS COGSOutSideSC,
+  CAST(0 AS FLOAT64) AS COGSTotalSC,
   cop.ue_LaborCost AS LaborCost,
   cop.ue_MaterialCost AS MaterialCost,
   cop.ue_fovhdCost AS FixOHCost,
@@ -1565,55 +1565,54 @@ SELECT
   cop.ue_ProductCode AS ProductCode,
   cop.ue_suffix AS Suffix,
   cop.ue_WC AS WorkCenter,
-  cop.month_year AS MonthYear,
-  NULL AS Resource,
+  '' AS MonthYear,
+  '' AS Resource,
   jobs.whse AS Warehouse,
   matl.ue_UpdatedBy AS UpdatedBy
-FROM `mp_infor.cost_of_production_PLN_jmbr` cop
-  LEFT JOIN `mp_infor.cost_of_production_PLN_jmbr` header ON cop.ue_Job = header.ue_Job 
+FROM {{ source('mp_infor', 'cost_of_production_PLN_jmbr') }} cop
+  LEFT JOIN {{ source('mp_infor', 'cost_of_production_PLN_jmbr') }} header ON cop.ue_Job = header.ue_Job 
                                                           AND header.ue_ItemType = 'Item'
-  LEFT JOIN `mp_infor.Jobs` jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix   
-  LEFT JOIN `mitraprodin-data-warehouse.PlantControlGianyarDps.JO_PostedBy` matl ON cop.ue_Job = matl.RefNum 
-  LEFT JOIN `mitraprodin-data-warehouse.PlantControlGianyarDps.conversions_table ` conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM                         
+  LEFT JOIN {{ source('mp_infor', 'Jobs') }} jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix   
+  LEFT JOIN {{ source('PlantControlGianyarDps', 'JO_PostedBy') }} matl ON cop.ue_Job = matl.RefNum 
+  LEFT JOIN {{ ref('conversions_table') }} conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM                         
 WHERE cop.ue_ItemType <> 'Item'
 UNION ALL
 --END PLAN JEMBRANA--
-
 --SALES--
-SELECT
-  NULL AS CopType,
+SELECT 
+  '' AS CopType,
   'SALES' as TransType,
-  NULL AS Site,
+  '' AS Site,
   sales.Item AS Item,
   sales.ItemDesc,
-    NULL AS ItemChildDesc,
-  NULL AS ItemType,
+    '' AS ItemChildDesc,
+  '' AS ItemType,
   sales.overview AS ItemOverview,
   sales.Um,
   sales.InvNum AS InvoiceNum,
-  sales.ConvFactor,
-  sales.ConvUn,
-  sales.ExchRate,
-  NULL AS Job,
-  NULL AS Category,
-  NULL as WCDesc,
+  CAST(sales.ConvFactor AS FLOAT64) AS ConvFactor,
+  CAST(sales.ConvUn AS STRING) AS ConvUn,
+  CAST(sales.ExchRate AS STRING) AS ExchRate,
+  '' AS Job,
+  '' AS Category,
+  '' AS WCDesc,
   sales.ProductcodeDescription as ProdCodeDesc,
   sales.ShipDate as Date,
-  NULL AS ItemChild,
+  '' AS ItemChild,
   sales.CustNum AS CustomerNum,
   sales.CustName AS CustomerName,
-  0 as ProdQty,
-  0 as ProdQtyChild,
-  0 AS ProdQtyAvg,
+  CAST(0 AS FLOAT64) as ProdQty,
+  CAST(0 AS FLOAT64) as ProdQtyChild,
+  CAST(0 AS FLOAT64) AS ProdQtyAvg,
   sales.QtyPcs as SalesQtyPcs,
   sales.QtyInvoiced as SalesQty,
-  0 as COPMaterial,
-  0 as COPLabor,
-  0 as COPFixOH,
-  0 as COPVarOH,
-  0 AS COPOutSide,
-  0 AS COPTotalOutSide,
-  0 AS COPTotal,
+  CAST(0 AS FLOAT64) as COPMaterial,
+  CAST(0 AS FLOAT64) as COPLabor,
+  CAST(0 AS FLOAT64) as COPFixOH,
+  CAST(0 AS FLOAT64) as COPVarOH,
+  CAST(0 AS FLOAT64) AS COPOutSide,
+  CAST(0 AS FLOAT64) AS COPTotalOutSide,
+  CAST(0 AS FLOAT64) AS COPTotal,
   sales.CurrCode,
   sales.ExtendedPrice AS SalesGross,
   sales.DiscAmt as DiscountUnit,
@@ -1626,17 +1625,17 @@ SELECT
   sales.CgsVovhdTotal AS COGSVarOHSC,
   sales.CgsOutTotal AS COGSOutSideSC,
   sales.CgsTotal AS COGSTotalSC,
-  0 AS LaborCost,
-  0 AS MaterialCost,
-  0 AS FixOHCost,
-  NULL AS OperNum,
-  NULL AS ProductCode,
-  NULL AS Suffix,
-  NULL AS WorkCenter,
-  NULL AS MonthYear,
-  NULL AS Resource,
-  NULL AS Warehouse,
-  NULL AS UpdatedBy
-FROM `mp_infor.salestransaction` sales
+  CAST(0 AS FLOAT64) AS LaborCost,
+  CAST(0 AS FLOAT64) AS MaterialCost,
+  CAST(0 AS FLOAT64) AS FixOHCost,
+  '' AS OperNum,
+  '' AS ProductCode,
+  '' AS Suffix,
+  '' AS WorkCenter,
+  '' AS MonthYear,
+  '' AS Resource,
+  '' AS Warehouse,
+  '' AS UpdatedBy
+FROM {{ source('mp_infor', 'salestransaction') }} sales
 
 ORDER BY Job, ItemType

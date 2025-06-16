@@ -8,15 +8,16 @@ sources:
       - name: job_transaction_mp
       - name: META_EmployeeHalfDay_v 
       - name: JobExclude
-      - name: cost_of_production_mp_new
       - name: Jobs
+      - name: cost_of_production_mp_new
       - name: cost_of_production_mpkb_new
       - name: cost_of_production_jmbr_new
       - name: material_usage_mp_new
       - name: material_usage_mpkb_new
       - name: material_usage_jmbr_new
       - name: cost_of_production_PLN_mp
-      - name: cost_of_production_PLN_jmbr
+      - name: cost_of_production_PLN_mpkb
+      - name: cost_of_production_PLN_jmbr 
       - name: salestransaction
       - name: employee_absence
       - name: user_case
@@ -34,4 +35,3 @@ sources:
     database: mitraprodin-data-warehouse
     tables:
       - name: JO_PostedBy
-      - name: conversions_table
