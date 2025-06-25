@@ -4,7 +4,16 @@
   )
 }}
 
-SELECT   
+SELECT
+  a.NIK,
+  a.EmployeeName,
+  a.PeriodeDate,
+  a.Periode,
+  SUM(a.CountLeave) AS CountLeave
+FROM 
+
+(SELECT 
+  DISTINCT
   a.NIK,
   a.employee_name AS EmployeeName,
   DATE(
@@ -24,12 +33,13 @@ SELECT
         DATE_TRUNC(DATE(a.leave_date), MONTH)
     END
   ) AS Periode,
-  COUNT(a.nik) AS CountLeave
+  a.day_count AS CountLeave
 FROM {{ source('mp_infor', 'userleave_detail') }} a 
 WHERE (a.id_m_leave_type_group IN (8,2) --included special leave, paid Leave, sick
-OR a.id_m_leave_type IN (43)) -- included sakit berat)
--- AND a.NIK='225055'
--- AND a.leave_date between '2025-01-21' AND '2025-02-20'
-GROUP BY PeriodeDate, Periode,
-a.NIK,a.employee_name
-ORDER BY PeriodeDate
+OR a.id_m_leave_type IN (43)) -- included sakit berat
+) a
+GROUP BY 
+  a.NIK,
+  a.EmployeeName,
+  a.PeriodeDate,
+  a.Periode

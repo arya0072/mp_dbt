@@ -34,6 +34,6 @@ FROM (
     AND a.IncentiveDate >= '2025-01-21'
     AND SUBSTR(a.Job, 1, 4) IN ('JSFG','JSFJ','JSMJ')
 ) stat
-  LEFT JOIN {{ ref('META_WorkingDays_v')}} wd ON stat.Periode = wd.Periode
+  LEFT JOIN {{ ref('META_WorkingDays_v') }} wd ON stat.Periode = wd.Periode
 GROUP BY stat.Periode, stat.Job
 ORDER BY stat.Periode

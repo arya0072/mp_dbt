@@ -111,7 +111,7 @@ SELECT
     ELSE 'Not Identify'  
   END AS CategoryJO,
   absence.absence_date
-FROM `mp_infor.mp80_incentives` a
+FROM {{ source('mp_infor', 'mp80_incentives') }} a
   LEFT JOIN {{ source('mp_infor', 'hris_user') }} user ON TRIM(a.EmpNum) = user.nik
   LEFT JOIN {{ source('mp_infor', 'product_codes_BQ') }} prod_code ON a.ProductCode = prod_code.ProductCode
   LEFT JOIN {{ source('mp_infor', 'jobRoutes') }} job_route ON a.Job = job_route.Job AND job_route.OperNum = '10'
@@ -125,13 +125,32 @@ FROM `mp_infor.mp80_incentives` a
               LEFT JOIN {{ source('mp_infor', 'user_absence') }} user_absence ON a.id_user_absence =  user_absence.id_user_absence
             ) absence ON TRIM(a.EmpNum) = absence.nik
                      AND FORMAT_DATE('%Y-%m-%d', a.IncentiveDate) = absence.absence_date
+  LEFT JOIN (SELECT 
+              TRIM(EmpNum) AS NIK,
+              Loc,
+              FORMAT_DATE(
+                '%Y-%m', 
+                CASE 
+                  WHEN EXTRACT(DAY FROM IncentiveDate) >= 21 THEN 
+                    DATE_ADD(DATE_TRUNC(DATE(IncentiveDate), MONTH), INTERVAL 1 MONTH)
+                  ELSE 
+                    DATE_TRUNC(DATE(IncentiveDate), MONTH)
+                END
+              ) AS Periode
+            FROM {{ source('mp_infor', 'mp80_incentives') }}
+            QUALIFY ROW_NUMBER() OVER (
+              PARTITION BY TRIM(EmpNum) 
+              ORDER BY IncentiveDate DESC
+            ) = 1
+            ) max_loc ON TRIM(a.empnum) = max_loc.NIK AND periode = max_loc.periode
 WHERE (a.Gross > 0 AND a.TargetQty > 0 AND a.TotalHours > 0 AND prod_code.prodcodeUf_MP80_RejectScore2 > 0 AND hours.TotalHours>0) 
   AND a.IncentiveDate >= '2025-01-21'
   -- AND TRIM(a.EmpNum) = '224195'
   -- AND a.IncentiveDate = '2025-01-22'
   -- AND a.Job= 'JSFG-79706'
   AND SUBSTR(a.Job, 1, 5) IN ('JSFG-','JSFJ-','JSMJ-')  -- JO Gianyar & Jembrana
-  AND a.Job NOT IN (SELECT ue_Job FROM `mp_infor.JobExclude`) -- Exclude Job Special Case
+  AND a.Job NOT IN (SELECT ue_Job FROM {{ source('mp_infor', 'JobExclude') }}) -- Exclude Job Special Case
+  AND a.Loc <> 'GP3 Filter' -- Exclude GP3 Filter
 GROUP BY  a.Job,
   a.JobOper,
   a.JobStat,

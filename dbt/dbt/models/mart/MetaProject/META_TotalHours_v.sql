@@ -36,7 +36,7 @@ FROM {{ source('mp_infor', 'mp80_incentives') }} a
               FROM mp_infor.mp80_incentives a
               WHERE FORMAT_DATE('%Y-%m-%d', a.IncentiveDate) >= '2025-01-21'
                 AND SUBSTR(a.Job, 1, 5) IN ('JSFG-','JSFJ-','JSMJ-')  -- JO Gianyar & Jembrana
-                AND a.Job NOT IN (SELECT ue_Job FROM {{ source('mp_infor', 'JobExclude')}})
+                AND a.Job NOT IN (SELECT ue_Job FROM {{ source('mp_infor', 'JobExclude') }})
               GROUP BY 
                 IncentiveDate,
                 NIK

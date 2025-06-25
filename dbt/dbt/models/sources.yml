@@ -3,6 +3,7 @@ version: 2
 sources:
   - name: mp_infor 
     database: mitraprodin-data-warehouse 
+    description: Data from Infor ERP
     tables:
       - name: mp80_incentives
       - name: job_transaction_mp

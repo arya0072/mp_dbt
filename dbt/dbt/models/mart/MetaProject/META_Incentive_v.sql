@@ -10,9 +10,9 @@ SELECT
   a.PeriodeDate,
   a.EmpNum AS NIK,
   a.EmployeeName,
-  a.Resource,
+  a.ResourceTrans AS Resource,
   SUBSTR(a.Job, 1, 4) AS Job,
-  SUBSTR(a.ProductCode, 1, 3) AS ProductCode,
+  -- SUBSTR(a.ProductCode, 1, 3) AS ProductCode,
   SUM(a.Gross) AS Gross,
   SUM(a.Reject) AS Reject,
   SUM(a.TargetReject) AS TargetReject,
@@ -29,19 +29,19 @@ SELECT
   ROUND(SUM(a.TargetByMatrix), 1) AS TargetByMatrix,
   ROUND(SUM(a.TotalHours), 1) AS TotalHours,
   CASE 
-    WHEN SUBSTR(a.ProductCode, 1, 3) NOT IN ('SFT') AND ROUND((SUM(a.Netto) / NULLIF(SUM(a.Target), 0)) * 100, 2) BETWEEN 102.50 AND 103.49 THEN 'GROUP 1'
-    WHEN SUBSTR(a.ProductCode, 1, 3) NOT IN ('SFT') AND ROUND((SUM(a.Netto) / NULLIF(SUM(a.Target), 0)) * 100, 2) BETWEEN 103.50 AND 104.49 THEN 'GROUP 2'
-    WHEN SUBSTR(a.ProductCode, 1, 3) NOT IN ('SFT') AND ROUND((SUM(a.Netto) / NULLIF(SUM(a.Target), 0)) * 100, 2) BETWEEN 104.50 AND 107.49 THEN 'GROUP 3'
-    WHEN SUBSTR(a.ProductCode, 1, 3) NOT IN ('SFT') AND ROUND((SUM(a.Netto) / NULLIF(SUM(a.Target), 0)) * 100, 2) BETWEEN 107.50 AND 110.49 THEN 'GROUP 4'
-    WHEN SUBSTR(a.ProductCode, 1, 3) NOT IN ('SFT') AND ROUND((SUM(a.Netto) / NULLIF(SUM(a.Target), 0)) * 100, 2) BETWEEN 110.50 AND 117.49 THEN 'GROUP 5'
-    WHEN SUBSTR(a.ProductCode, 1, 3) NOT IN ('SFT') AND ROUND((SUM(a.Netto) / NULLIF(SUM(a.Target), 0)) * 100, 2) BETWEEN 117.50 AND 122.49 THEN 'GROUP 6'
-    WHEN SUBSTR(a.ProductCode, 1, 3) NOT IN ('SFT') AND ROUND((SUM(a.Netto) / NULLIF(SUM(a.Target), 0)) * 100, 2) >= 122.50 THEN 'GROUP 7'
-    WHEN SUBSTR(a.ProductCode, 1, 3) IN ('SFT') AND (SUM(a.Netto) / ROUND(SUM(a.TotalHours), 1))  > 598 THEN 'GROUP HRF'
+    WHEN /*/*SUBSTR(a.ProductCode, 1, 3) NOT IN ('SFT') AND*/ ROUND((SUM(a.Netto) / NULLIF(SUM(a.Target), 0)) * 100, 2) BETWEEN 102.50 AND 103.49 THEN 'GROUP 1'
+    WHEN /*SUBSTR(a.ProductCode, 1, 3) NOT IN ('SFT') AND*/ ROUND((SUM(a.Netto) / NULLIF(SUM(a.Target), 0)) * 100, 2) BETWEEN 103.50 AND 104.49 THEN 'GROUP 2'
+    WHEN /*SUBSTR(a.ProductCode, 1, 3) NOT IN ('SFT') AND*/ ROUND((SUM(a.Netto) / NULLIF(SUM(a.Target), 0)) * 100, 2) BETWEEN 104.50 AND 107.49 THEN 'GROUP 3'
+    WHEN /*SUBSTR(a.ProductCode, 1, 3) NOT IN ('SFT') AND*/ ROUND((SUM(a.Netto) / NULLIF(SUM(a.Target), 0)) * 100, 2) BETWEEN 107.50 AND 110.49 THEN 'GROUP 4'
+    WHEN /*SUBSTR(a.ProductCode, 1, 3) NOT IN ('SFT') AND*/ ROUND((SUM(a.Netto) / NULLIF(SUM(a.Target), 0)) * 100, 2) BETWEEN 110.50 AND 117.49 THEN 'GROUP 5'
+    WHEN /*SUBSTR(a.ProductCode, 1, 3) NOT IN ('SFT') AND*/ ROUND((SUM(a.Netto) / NULLIF(SUM(a.Target), 0)) * 100, 2) BETWEEN 117.50 AND 122.49 THEN 'GROUP 6'
+    WHEN /*SUBSTR(a.ProductCode, 1, 3) NOT IN ('SFT') AND*/ ROUND((SUM(a.Netto) / NULLIF(SUM(a.Target), 0)) * 100, 2) >= 122.50 THEN 'GROUP 7'
+    WHEN /*SUBSTR(a.ProductCode, 1, 3) IN ('SFT') AND*/ (SUM(a.Netto) / ROUND(SUM(a.TotalHours), 1))  > 598 THEN 'GROUP HRF'
     ELSE '-'
   END AS GroupProductivity,
   CASE
-    WHEN SUBSTR(a.ProductCode, 1, 3) NOT IN ('SFT') 
-         AND SUM(a.Target) <> SUM(a.TargetByMatrix) 
+    WHEN /*SUBSTR(a.ProductCode, 1, 3) NOT IN ('SFT') 
+         AND*/ SUM(a.Target) <> SUM(a.TargetByMatrix) 
          AND ROUND((SUM(a.Netto) / NULLIF(SUM(a.TargetByMatrix), 0)) * 100, 2) > 110 
     THEN 'GROUP 1'
     ELSE '-'
@@ -83,6 +83,6 @@ GROUP BY
   a.EmpNum,
   a.EmployeeName,
   a.Location,
-  a.Resource,
-  a.ProductCode,
+  a.ResourceTrans,
+  -- a.ProductCode,
   SUBSTR(a.Job, 1, 4)
