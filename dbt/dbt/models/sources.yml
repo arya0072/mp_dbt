@@ -5,32 +5,43 @@ sources:
     database: mitraprodin-data-warehouse 
     description: Data from Infor ERP
     tables:
-      - name: mp80_incentives
-      - name: job_transaction_mp
-      - name: META_EmployeeHalfDay_v 
-      - name: JobExclude
-      - name: Jobs
+      - name: Budget Sales Qty
+      - name: budget_sales
+      - name: budget_cogs
       - name: cost_of_production_mp_new
       - name: cost_of_production_mpkb_new
       - name: cost_of_production_jmbr_new
-      - name: material_usage_mp_new
-      - name: material_usage_mpkb_new
-      - name: material_usage_jmbr_new
       - name: cost_of_production_PLN_mp
       - name: cost_of_production_PLN_mpkb
       - name: cost_of_production_PLN_jmbr 
-      - name: salestransaction
+      - name: DownTimeList
       - name: employee_absence
-      - name: user_case
       - name: hris_user
-      - name: product_codes_BQ
-      - name: user_absence
-      - name: WorkingDays
-      - name: userleave_detail
-      - name: UserResign
       - name: items
       - name: item_attribute_all
       - name: jobRoutes
+      - name: job_transaction_mp
+      - name: JobExclude
+      - name: Jobs
+      - name: ledger
+      - name: ledger_mpkb
+      - name: ledger_notes
+      - name: ledger_notes_mpkb
+      - name: Labor_Exces
+      - name: material_transaction
+      - name: material_usage_mp_new
+      - name: material_usage_mpkb_new
+      - name: material_usage_jmbr_new
+      - name: META_EmployeeHalfDay_v
+      - name: mp80_incentives
+      - name: product_codes_BQ
+      - name: po_detail
+      - name: salestransaction
+      - name: user_case
+      - name: user_absence
+      - name: userleave_detail
+      - name: UserResign
+      - name: WorkingDays    
 
   - name: PlantControlGianyarDps
     database: mitraprodin-data-warehouse
