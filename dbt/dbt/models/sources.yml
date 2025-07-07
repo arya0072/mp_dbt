@@ -33,7 +33,9 @@ sources:
       - name: material_usage_mpkb_new
       - name: material_usage_jmbr_new
       - name: META_EmployeeHalfDay_v
+      - name: movement_qty_mp
       - name: mp80_incentives
+      - name: mp83_joborder_progress
       - name: product_codes_BQ
       - name: po_detail
       - name: salestransaction

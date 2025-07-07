@@ -27,6 +27,7 @@ SELECT DISTINCT
   mat_trans.Qty,
   mat_trans.RefNum,
   mat_trans.RefLineSuf,
+  po_detail.POItem,
   po_detail.PoNum, 
   po_detail.PoLine,
   po_detail.Description
@@ -41,6 +42,7 @@ FROM {{ ref('ledger_notes_v') }} ledger
             FROM {{ source('mp_infor', 'material_transaction') }}
             ) mat_trans ON ledger.MatlTransNum = mat_trans.TransNum
   LEFT JOIN (SELECT 
+              Item AS POItem,
               PoNum, 
               PoLine,
               Description 
