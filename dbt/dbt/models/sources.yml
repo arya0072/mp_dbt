@@ -5,6 +5,7 @@ sources:
     database: mitraprodin-data-warehouse 
     description: Data from Infor ERP
     tables:
+      - name: budget_departement
       - name: Budget Sales Qty
       - name: budget_sales
       - name: budget_cogs
@@ -13,12 +14,20 @@ sources:
       - name: cost_of_production_jmbr_new
       - name: cost_of_production_PLN_mp
       - name: cost_of_production_PLN_mpkb
-      - name: cost_of_production_PLN_jmbr 
+      - name: cost_of_production_PLN_jmbr
+      - name: customer_data  
       - name: DownTimeList
       - name: employee_absence
+      - name: fix_assets
+      - name: fix_assets_note
       - name: hris_user
       - name: items
+      - name: itemsCustomer
+      - name: items_new
+      - name: item_atrribute
       - name: item_attribute_all
+      - name: itemsAttribute_jembrana
+      - name: items_jembrana
       - name: jobRoutes
       - name: job_transaction_mp
       - name: JobExclude
@@ -28,22 +37,49 @@ sources:
       - name: ledger_notes
       - name: ledger_notes_mpkb
       - name: Labor_Exces
+      - name: m_department
+      - name: m_vendor
       - name: material_transaction
+      - name: material_tran_1
+      - name: material_tran_1_mpkb
       - name: material_usage_mp_new
       - name: material_usage_mpkb_new
       - name: material_usage_jmbr_new
+      - name: material_transaction_reasoncode_mpkb
+      - name: material_transaction_reasoncode_mp
       - name: META_EmployeeHalfDay_v
+      - name: miradore_asset_number
+      - name: miradore_devices
+      - name: movement_location_mp
+      - name: movement_location_mpkb
+      - name: movement_location_jmbr
       - name: movement_qty_mp
+      - name: movement_value_mp_new
+      - name: movement_value_mpkb_new
+      - name: movement_value_jmbr_new
+      - name: MP34_SalesTransaction
       - name: mp80_incentives
       - name: mp83_joborder_progress
       - name: product_codes_BQ
+      - name: product_codes_jembrana
       - name: po_detail
+      - name: PO_Receipt
+      - name: saldo_awal_qty_mp_bq
+      - name: saldo_awal_qty_mpkb_bq
       - name: salestransaction
+      - name: shipment_or_fi_detail
+      - name: StandartCost
+      - name: transtype_MP
+      - name: transtype_MPKB
       - name: user_case
       - name: user_absence
       - name: userleave_detail
       - name: UserResign
-      - name: WorkingDays    
+      - name: uom_conversion
+      - name: WorkingDays 
+      - name: vendorEvaluation
+      - name: vendorContract  
+      - name: vendorContractPrice      
 
   - name: PlantControlGianyarDps
     database: mitraprodin-data-warehouse
