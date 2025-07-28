@@ -10,12 +10,15 @@ sources:
       - name: budget_sales
       - name: budget_cogs
       - name: cost_of_production_mp_new
+      - name: cost_of_production_mpkb
       - name: cost_of_production_mpkb_new
+      - name: cost_of_production_jmbr
       - name: cost_of_production_jmbr_new
       - name: cost_of_production_PLN_mp
       - name: cost_of_production_PLN_mpkb
       - name: cost_of_production_PLN_jmbr
-      - name: customer_data  
+      - name: customer_data
+      - name: current_material_jembrana  
       - name: DownTimeList
       - name: employee_absence
       - name: fix_assets
@@ -39,11 +42,17 @@ sources:
       - name: Labor_Exces
       - name: m_department
       - name: m_vendor
+      - name: material_tran_acct
+      - name: material_tran_desc
+      - name: material_tran_acct_mpkb
+      - name: material_tran_desc_mpkb
       - name: material_transaction
       - name: material_tran_1
       - name: material_tran_1_mpkb
       - name: material_usage_mp_new
+      - name: material_usage_mpkb
       - name: material_usage_mpkb_new
+      - name: material_usage_jmbr
       - name: material_usage_jmbr_new
       - name: material_transaction_reasoncode_mpkb
       - name: material_transaction_reasoncode_mp
@@ -69,6 +78,9 @@ sources:
       - name: salestransaction
       - name: shipment_or_fi_detail
       - name: StandartCost
+      - name: standard_cost 
+      - name: standard_cost_jmbr 
+      - name: standard_cost_mpkb      
       - name: transtype_MP
       - name: transtype_MPKB
       - name: user_case

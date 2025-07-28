@@ -14,8 +14,15 @@ select DISTINCT
   mattrans_mp.Qty,
   mattrans_mp.Whse,
   'MP' as  site,
-  transtype_mp.RefType 
+  transtype_mp.RefType,
+  mattrans_mp.MatlCost AS MaterialCost,
+  mattrans_mp.LbrCost AS LaborCost,
+  mattrans_mp.FovhdCost,
+  mattrans_mp.VovhdCost,
+  mattrans_mp.OutCost AS OutsideCost,
+  item.Description AS ItemDescription 
 from {{ source('mp_infor', 'material_tran_1') }} mattrans_mp
+  LEFT JOIN {{ source('mp_infor', 'items') }} item ON mattrans_mp.Item = item.Item
   LEFT JOIN (select
               a.TransNum,
               a.RefType
@@ -32,8 +39,15 @@ select DISTINCT
   mattrans_mpkb.Qty,
   mattrans_mpkb.Whse,
   'MPKB' as  site,
-  transtype_mpkb.RefType  
+  transtype_mpkb.RefType,
+    mattrans_mpkb.MatlCost AS MaterialCost,
+  mattrans_mpkb.LbrCost AS LaborCost,
+  mattrans_mpkb.FovhdCost,
+  mattrans_mpkb.VovhdCost,
+  mattrans_mpkb.OutCost AS OutsideCost,
+  item.Description AS ItemDescription  
 from {{ source('mp_infor', 'material_tran_1_mpkb') }} mattrans_mpkb
+  LEFT JOIN {{ source('mp_infor', 'items') }} item ON mattrans_mpkb.Item = item.Item
   LEFT JOIN (select
               a.TransNum,
               a.RefType
