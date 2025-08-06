@@ -5,10 +5,13 @@ sources:
     database: mitraprodin-data-warehouse 
     description: Data from Infor ERP
     tables:
+      - name: budget_actual
       - name: budget_departement
       - name: Budget Sales Qty
       - name: budget_sales
       - name: budget_cogs
+      - name: COA
+      - name: cost_of_production
       - name: cost_of_production_mp_new
       - name: cost_of_production_mpkb
       - name: cost_of_production_mpkb_new
@@ -18,12 +21,24 @@ sources:
       - name: cost_of_production_PLN_mpkb
       - name: cost_of_production_PLN_jmbr
       - name: customer_data
-      - name: current_material_jembrana  
+      - name: current_material
+      - name: current_material_jembrana 
+      - name: document_object 
       - name: DownTimeList
       - name: employee_absence
       - name: fix_assets
       - name: fix_assets_note
+      - name: GRNLines
       - name: hris_user
+      - name: HRIS_CandidatePosition
+      - name: HRIS_CandidateRecRequest
+      - name: HRIS_McuAll
+      - name: HRIS_Mcu
+      - name: HRIS_Section
+      - name: Infor_User
+      - name: Infor_UserGroup
+      - name: Infor_UserAuth
+      - name: InternshipPerformance
       - name: items
       - name: itemsCustomer
       - name: items_new
@@ -33,6 +48,8 @@ sources:
       - name: items_jembrana
       - name: jobRoutes
       - name: job_transaction_mp
+      - name: job_transaction_mpkb
+      - name: job_transaction_jmbr
       - name: JobExclude
       - name: Jobs
       - name: ledger
@@ -40,6 +57,8 @@ sources:
       - name: ledger_notes
       - name: ledger_notes_mpkb
       - name: Labor_Exces
+      - name: ListUnprocessed
+      - name: ListUserContract
       - name: m_department
       - name: m_vendor
       - name: material_tran_acct
@@ -49,6 +68,8 @@ sources:
       - name: material_transaction
       - name: material_tran_1
       - name: material_tran_1_mpkb
+      - name: material_usage
+      - name: material_usage_mp_fix
       - name: material_usage_mp_new
       - name: material_usage_mpkb
       - name: material_usage_mpkb_new
@@ -66,13 +87,26 @@ sources:
       - name: movement_value_mp_new
       - name: movement_value_mpkb_new
       - name: movement_value_jmbr_new
+      - name: mp123_scraps
       - name: MP34_SalesTransaction
+      - name: MP76_PI_Payment
       - name: mp80_incentives
       - name: mp83_joborder_progress
+      - name: outstanding_co
       - name: product_codes_BQ
       - name: product_codes_jembrana
+      - name: PR_NonInventory
+      - name: pr_header
+      - name: PR_Items
+      - name: pr_detail
+      - name: PRPO_NotesDetail
+      - name: PO_Items
+      - name: po_header
       - name: po_detail
       - name: PO_Receipt
+      - name: PO_NonInventory
+      - name: ReqPayHeader
+      - name: ReqPayDetail
       - name: saldo_awal_qty_mp_bq
       - name: saldo_awal_qty_mpkb_bq
       - name: salestransaction
@@ -83,6 +117,7 @@ sources:
       - name: standard_cost_mpkb      
       - name: transtype_MP
       - name: transtype_MPKB
+      - name: TurnOverMagang
       - name: user_case
       - name: user_absence
       - name: userleave_detail
