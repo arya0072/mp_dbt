@@ -13,7 +13,7 @@ select
 FROM (
 SELECT 
   trim(a.EmpNum) AS NIK,
-  a.EmpName,
+  a.EmployeeName AS EmpName,
   DATE(
     CASE 
       WHEN EXTRACT(DAY FROM a.IncentiveDate) >= 21 THEN 
@@ -33,7 +33,7 @@ SELECT
   ) AS Periode,
   FORMAT_DATE('%Y-%m-%d', a.IncentiveDate) AS IncentiveDate,
   coalesce( absence.day_count,1) as DayCount
-from {{ source('mp_infor', 'mp80_incentives') }} a 
+from {{ ref('MP80_IncentiveMP_v') }} a 
 LEFT JOIN (SELECT 
               a.nik,
               a.employee_name,
@@ -52,7 +52,7 @@ where (a.Gross > 0 AND a.TargetQty > 0 AND a.TotalHours > 0)
   AND a.IncentiveDate >= '2025-01-21'
   AND SUBSTR(a.Job, 1, 4) IN ('JSFG','JSFJ','JSMJ')
 GROUP BY PeriodeDate, Periode,
-nik,a.EmpName, IncentiveDate, DayCount
+nik,a.EmployeeName, IncentiveDate, DayCount
 ) total_abs
 GROUP BY total_abs.nik,
   total_abs.EmpName,

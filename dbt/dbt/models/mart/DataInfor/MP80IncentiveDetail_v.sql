@@ -8,9 +8,9 @@ SELECT
   DISTINCT
   TRIM(a.EmpNum) AS EmpNum,
   user.FullName AS EmployeeName,
-  a.EmpStatus AS Status,
+  a.Status AS Status,
   user.Section AS Resource,
-  a.RlcResource AS ResourceTrans,
+  a.ResourceTrans,
   user.SectionGroup AS ResourceGroup,
   a.Job,
   DATE(a.IncentiveDate) AS IncentiveDate,
@@ -34,12 +34,12 @@ SELECT
   SUBSTR(a.ProductCode, 1, 3) AS ProductCode,
   prod_code.Description AS ProdCodeDesc,
   TRIM(a.ConeType) AS ConeType,
-  a.JobItem AS Item,
-  a.JobItemDesc AS Description,
-  a.JobOper AS Operation,
-  a.JobStat AS JobStatus,
-  a.Loc AS Location,
-  a.wc AS WorkCenter,
+  a.Item,
+  a.Description,
+  a.Operation,
+  a.JobStatus,
+  a.Location,
+  a.WorkCenter,
   a.Gross,
   a.BA,
   a.BLT,
@@ -119,7 +119,7 @@ SELECT
   JT.AHrs AS WH_PPIC,
   JR.EMP_PPIC AS EMP_PPIC,
   absence.absence_date
-FROM {{ source('mp_infor', 'mp80_incentives') }} a
+FROM {{ ref('MP80_IncentiveMP_v') }} a
 LEFT JOIN {{ source('mp_infor', 'hris_user') }} user ON TRIM(a.EmpNum) = user.nik
 LEFT JOIN {{ source('mp_infor', 'product_codes_BQ') }} prod_code ON a.ProductCode = prod_code.ProductCode
 LEFT JOIN (
@@ -157,15 +157,15 @@ WHERE (a.Gross > 0 AND a.TargetQty > 0 AND a.TotalHours > 0 AND prod_code.prodco
   -- AND a.Job = 'JSFG-87500'
 GROUP BY 
   a.Job,
-  a.JobOper,
-  a.JobStat,
+  a.Operation,
+  a.JobStatus,
   a.IncentiveDate,
   TRIM(a.EmpNum),
   user.FullName,
-  a.EmpStatus,
-  a.Loc,
-  a.JobItem,
-  a.JobItemDesc,
+  a.Status,
+  a.Location,
+  a.Item,
+  a.Description,
   a.ProductCode,
   TRIM(a.ConeType),
   user.Section,
@@ -193,8 +193,8 @@ GROUP BY
   a.Posted,
   a.Closed,
   a.LastTransactionDate,
-  a.wc,
-  a.RlcResource,
+  a.WorkCenter,
+  a.ResourceTrans,
   prod_code.Description,
   prod_code.prodcodeUf_MP80_RejectScore2,
   job_route.Efficiency,

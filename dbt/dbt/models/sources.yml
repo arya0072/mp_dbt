@@ -23,12 +23,17 @@ sources:
       - name: customer_data
       - name: current_material
       - name: current_material_jembrana 
+      - name: current_operation
       - name: document_object 
       - name: DownTimeList
+      - name: EmployeeContractHistory
       - name: employee_absence
       - name: fix_assets
       - name: fix_assets_note
       - name: GRNLines
+      - name: hrpayroll_p_daily_production_summary
+      - name: hrpayroll_m_section
+      - name: hrpayroll_m_floor
       - name: hris_user
       - name: HRIS_CandidatePosition
       - name: HRIS_CandidateRecRequest
@@ -40,6 +45,7 @@ sources:
       - name: Infor_UserAuth
       - name: InternshipPerformance
       - name: items
+      - name: items_mpkb
       - name: itemsCustomer
       - name: items_new
       - name: item_atrribute
@@ -61,6 +67,8 @@ sources:
       - name: ListUserContract
       - name: m_department
       - name: m_vendor
+      - name: m_shipment
+      - name: material_tran_jmbr
       - name: material_tran_acct
       - name: material_tran_desc
       - name: material_tran_acct_mpkb
@@ -75,6 +83,8 @@ sources:
       - name: material_usage_mpkb_new
       - name: material_usage_jmbr
       - name: material_usage_jmbr_new
+      - name: material_transaction_coop
+      - name: material_transaction_reasoncode_jmbr
       - name: material_transaction_reasoncode_mpkb
       - name: material_transaction_reasoncode_mp
       - name: META_EmployeeHalfDay_v
@@ -92,8 +102,13 @@ sources:
       - name: MP76_PI_Payment
       - name: mp80_incentives
       - name: mp83_joborder_progress
+      - name: mp83_joborder_progress_jemb
+      - name: mp131_stock_co
+      - name: mp131_stock_all_located
       - name: outstanding_co
+      - name: Output_standart_new
       - name: product_codes_BQ
+      - name: product_codes_mpkb
       - name: product_codes_jembrana
       - name: PR_NonInventory
       - name: pr_header
@@ -105,8 +120,10 @@ sources:
       - name: po_detail
       - name: PO_Receipt
       - name: PO_NonInventory
+      - name: reasoncode_MP
       - name: ReqPayHeader
       - name: ReqPayDetail
+      - name: RmaItems
       - name: saldo_awal_qty_mp_bq
       - name: saldo_awal_qty_mpkb_bq
       - name: salestransaction
@@ -120,6 +137,7 @@ sources:
       - name: TurnOverMagang
       - name: user_case
       - name: user_absence
+      - name: UserHistoryEmployeeStatus
       - name: userleave_detail
       - name: UserResign
       - name: uom_conversion

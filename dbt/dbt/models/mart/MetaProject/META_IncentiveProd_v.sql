@@ -8,9 +8,9 @@ SELECT
   DISTINCT
   TRIM(a.EmpNum) as EmpNum,
   user.FullName as EmployeeName,
-  a.EmpStatus as Status,
+  a.Status,
   user.Section as Resource,
-  a.RlcResource as ResourceTrans,
+  user.Section as ResourceTrans,
   user.SectionGroup as ResourceGroup,
   a.Job,
   SUBSTR(a.Job, 1, 4) AS JobPrefix,
@@ -35,12 +35,12 @@ SELECT
   SUBSTR(a.ProductCode, 1, 3) AS ProductCode,
   prod_code.Description as ProdCodeDesc,
   TRIM(a.ConeType) AS ConeType,
-  a.JobItem as Item,
-  a.JobItemDesc as Description,
-  a.JobOper as Operation,
-  a.JobStat as JobStatus,
-  a.Loc as Location,
-  a.wc as WorkCenter,
+  a.Item,
+  a.Description,
+  a.Operation,
+  a.JobStatus,
+  max_loc.Loc as Location,
+  a.WorkCenter,
   a.Gross,
   a.BA,
   a.BLT,
@@ -111,7 +111,7 @@ SELECT
     ELSE 'Not Identify'  
   END AS CategoryJO,
   absence.absence_date
-FROM {{ source('mp_infor', 'mp80_incentives') }} a
+FROM {{ ref('MP80_IncentiveMP_v') }} a
   LEFT JOIN {{ source('mp_infor', 'hris_user') }} user ON TRIM(a.EmpNum) = user.nik
   LEFT JOIN {{ source('mp_infor', 'product_codes_BQ') }} prod_code ON a.ProductCode = prod_code.ProductCode
   LEFT JOIN {{ source('mp_infor', 'jobRoutes') }} job_route ON a.Job = job_route.Job AND job_route.OperNum = '10'
@@ -127,7 +127,7 @@ FROM {{ source('mp_infor', 'mp80_incentives') }} a
                      AND FORMAT_DATE('%Y-%m-%d', a.IncentiveDate) = absence.absence_date
   LEFT JOIN (SELECT 
               TRIM(EmpNum) AS NIK,
-              Loc,
+               Location As Loc,
               FORMAT_DATE(
                 '%Y-%m', 
                 CASE 
@@ -137,7 +137,7 @@ FROM {{ source('mp_infor', 'mp80_incentives') }} a
                     DATE_TRUNC(DATE(IncentiveDate), MONTH)
                 END
               ) AS Periode
-            FROM {{ source('mp_infor', 'mp80_incentives') }}
+            FROM {{ ref('MP80_IncentiveMP_v') }}
             QUALIFY ROW_NUMBER() OVER (
               PARTITION BY TRIM(EmpNum) 
               ORDER BY IncentiveDate DESC
@@ -150,17 +150,17 @@ WHERE (a.Gross > 0 AND a.TargetQty > 0 AND a.TotalHours > 0 AND prod_code.prodco
   -- AND a.Job= 'JSFG-79706'
   AND SUBSTR(a.Job, 1, 5) IN ('JSFG-','JSFJ-','JSMJ-')  -- JO Gianyar & Jembrana
   AND a.Job NOT IN (SELECT ue_Job FROM {{ source('mp_infor', 'JobExclude') }}) -- Exclude Job Special Case
-  AND a.Loc <> 'GP3 Filter' -- Exclude GP3 Filter
+  AND a.Location <> 'GP3 Filter' -- Exclude GP3 Filter
 GROUP BY  a.Job,
-  a.JobOper,
-  a.JobStat,
+  a.Operation,
+  a.JobStatus,
   a.IncentiveDate,
   TRIM(a.EmpNum),
   user.FullName,
-  a.EmpStatus,
-  a.Loc,
-  a.JobItem,
-  a.JobItemDesc,
+  a.Status,
+  max_loc.Loc,
+  a.Item,
+  a.Description,
   a.ProductCode,
   TRIM(a.ConeType),
   user.Section,
@@ -188,8 +188,7 @@ GROUP BY  a.Job,
   a.Posted,
   a.Closed,
   a.LastTransactionDate,
-  a.wc,
-  a.RlcResource,
+  a.WorkCenter,
   prod_code.Description,
   prod_code.prodcodeUf_MP80_RejectScore2,
   job_route.Efficiency,

@@ -21,7 +21,7 @@ DISTINCT
     WHEN a.TotalHours < JT.AHrs THEN JT.AHrs
     ELSE JT.AHrs
   END AS TotalHours
-FROM {{ source('mp_infor', 'mp80_incentives') }} a
+FROM {{ ref('MP80_IncentiveMP_v') }} a
   LEFT JOIN (select 
               Job,
               AHrs,
@@ -33,7 +33,7 @@ FROM {{ source('mp_infor', 'mp80_incentives') }} a
                 FORMAT_DATE('%Y-%m-%d', a.IncentiveDate) AS IncentiveDate,
                 TRIM(a.EmpNum) AS NIK,
                 COUNT(DISTINCT a.job) AS count_job
-              FROM mp_infor.mp80_incentives a
+              FROM {{ ref('MP80_IncentiveMP_v') }} a
               WHERE FORMAT_DATE('%Y-%m-%d', a.IncentiveDate) >= '2025-01-21'
                 AND SUBSTR(a.Job, 1, 5) IN ('JSFG-','JSFJ-','JSMJ-')  -- JO Gianyar & Jembrana
                 AND a.Job NOT IN (SELECT ue_Job FROM {{ source('mp_infor', 'JobExclude') }})

@@ -25,11 +25,11 @@ FROM (
       END
     ) AS Periode,
     CASE
-      WHEN a.jobstat = 'C' THEN 'Complete'
+      WHEN a.JobStatus = 'C' THEN 'Complete'
       ELSE 'Not Complete'
     END AS JobStatus,
     SUBSTR(a.Job, 1, 4) AS Job
-  FROM {{ source('mp_infor', 'mp80_incentives') }} a 
+  FROM {{ ref('MP80_IncentiveMP_v') }} a 
   WHERE (a.Gross > 0 AND a.TargetQty > 0 AND a.TotalHours > 0) 
     AND a.IncentiveDate >= '2025-01-21'
     AND SUBSTR(a.Job, 1, 4) IN ('JSFG','JSFJ','JSMJ')
