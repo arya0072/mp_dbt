@@ -23,6 +23,10 @@ SELECT distinct
   a.TransType,
   a.Whse,
   CASE
+    WHEN substr(a.RESID, 1, 7) IN ('JMO-CP1') THEN 'Jembrana Machine Overtime - Cut Paper 1'
+    WHEN substr(a.RESID, 1, 7) IN ('M-CSJ01') THEN 'Machine - Cutting Slice Jembrana 01'
+    WHEN substr(a.RESID, 1, 7) IN ('M-UNW-1') THEN 'Machine Unwind 01'
+    WHEN substr(a.RESID, 1, 7) IN ('M-UNW-2') THEN 'Machine Unwind 02'
     WHEN substr(a.RESID, 1, 5) IN ('M-CTS') THEN 'Machine_Cutting_Slice'
     WHEN substr(a.RESID, 1, 5) IN ('M-PLG') THEN 'Machine_Plong'
     WHEN substr(a.RESID, 1, 5) IN ('M-CTP') THEN 'Machine_Cutting_Paper'
@@ -38,6 +42,9 @@ SELECT distinct
     When substr(a.RESID,9,14) IN ('CNC-02') Then 'Machine-CNC_2'
     When substr(a.RESID,9,14) IN ('LSR-01') Then 'Machine-LASER_1'
     When substr(a.RESID,9,14) IN ('LSR-02') Then 'Machine-LASER_2'
+    WHEN substr(a.RESID, 1, 7) IN ('M-CSJ01') THEN 'Machine - Cutting Slice Jembrana 01'
+    WHEN substr(a.RESID, 1, 7) IN ('M-UNW-1') THEN 'Machine Unwind 01'
+    WHEN substr(a.RESID, 1, 7) IN ('M-UNW-2') THEN 'Machine Unwind 02'
     ELSE 'NotIdentify'
   END AS machine_name,
   CASE 

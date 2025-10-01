@@ -123,7 +123,7 @@ SELECT
   a.Operation,
   'C' as JobStatus,
   m_floor.name as Location,
-  CAST(NULL AS STRING) AS WorkCenter,
+  JobRoute.wc AS WorkCenter,
   CAST(a.Gross AS FLOAT64) AS Gross,
   CAST(a.BA AS FLOAT64) AS BA,
   CAST(a.BLT AS FLOAT64) AS BLT,
@@ -163,5 +163,12 @@ FROM {{ source('mp_infor', 'hrpayroll_p_daily_production_summary') }} a
   LEFT JOIN {{ source('mp_infor', 'product_codes_BQ') }} prod_code ON a.ProductCode = prod_code.ProductCode
   LEFT JOIN {{ source('mp_infor', 'hrpayroll_m_section') }} section ON a.id_m_section = section.id
 	LEFT JOIN {{ source('mp_infor', 'hrpayroll_m_floor') }} m_floor ON section.id_m_floor = m_floor.id
+  LEFT JOIN (SELECT 
+              DISTINCT 
+              Job,
+              JobItem,
+              Wc
+              FROM {{ source('mp_infor', 'jobRoutes') }}
+              WHERE OperNum='10') JobRoute ON a.Job = JobRoute.Job AND a.Item = JobRoute.JobItem
 WHERE a.Gross > 0 
   AND DATE(TIMESTAMP_SECONDS(a.date) + INTERVAL 8 HOUR) >=  '2025-07-01' -- Start dari Production Portal

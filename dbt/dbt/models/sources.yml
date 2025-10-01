@@ -11,6 +11,7 @@ sources:
       - name: budget_sales
       - name: budget_cogs
       - name: COA
+      - name: COItems
       - name: cost_of_production
       - name: cost_of_production_mp_new
       - name: cost_of_production_mpkb
@@ -141,7 +142,8 @@ sources:
       - name: userleave_detail
       - name: UserResign
       - name: uom_conversion
-      - name: WorkingDays 
+      - name: WorkCenter
+      - name: WorkingDays  
       - name: vendorEvaluation
       - name: vendorContract  
       - name: vendorContractPrice      
