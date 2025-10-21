@@ -80,10 +80,12 @@ SELECT DISTINCT
   cop.ue_ProductCode AS ProductCode,
   cop.ue_suffix AS Suffix,
   cop.ue_WC AS WorkCenter,
-  cop.month_year AS MonthYear,
+  '' AS MonthYear,
   '' AS Resource,
   jobs.whse AS Warehouse,
-  matl.ue_UpdatedBy AS UpdatedBy
+  matl.ue_UpdatedBy AS UpdatedBy,
+  cop.ue_Qty as DetailQty,
+  conv.Convertion AS DetailConvFactor
 FROM {{ source('mp_infor', 'cost_of_production_mp_new') }} cop 
   LEFT JOIN {{ source('mp_infor', 'Jobs') }} jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
   LEFT JOIN {{ source('PlantControlGianyarDps', 'JO_PostedBy') }} matl ON cop.ue_Job = matl.RefNum
@@ -165,16 +167,19 @@ SELECT DISTINCT
   cop.ue_ProductCode AS ProductCode,
   cop.ue_suffix AS Suffix,
   cop.ue_WC AS WorkCenter,
-  cop.month_year AS MonthYear,
+  '' AS MonthYear,
   '' AS Resource,
   jobs.whse AS Warehouse,
-  matl.ue_UpdatedBy AS UpdatedBy
+  matl.ue_UpdatedBy AS UpdatedBy,
+  header.ue_Qty as DetailQty,
+  detailconv.Convertion AS DetailConvFactor
 FROM {{ source('mp_infor', 'cost_of_production_mp_new') }} cop
   LEFT JOIN {{ source('mp_infor', 'cost_of_production_mp_new') }} header ON cop.ue_Job = header.ue_Job 
                                                                          AND header.ue_ItemType = 'Item'
   LEFT JOIN {{ source('mp_infor', 'Jobs') }} jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
   LEFT JOIN {{ source('PlantControlGianyarDps', 'JO_PostedBy') }} matl ON cop.ue_Job = matl.RefNum
   LEFT JOIN {{ ref('conversions_table') }} conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM
+  LEFT JOIN {{ ref('conversions_table') }} detailconv ON header.ue_Item = detailconv.Item AND header.ue_UM = detailconv.UOM
 WHERE cop.ue_ItemType <> 'Item'
 UNION ALL
 --END ACTUAL MP--
@@ -255,10 +260,12 @@ SELECT DISTINCT
   cop.ue_ProductCode AS ProductCode,
   cop.ue_suffix AS Suffix,
   cop.ue_WC AS WorkCenter,
-  cop.month_year AS MonthYear,
+  '' AS MonthYear,
   '' AS Resource,
   jobs.whse AS Warehouse,
-  matl.ue_UpdatedBy AS UpdatedBy
+  matl.ue_UpdatedBy AS UpdatedBy,
+  cop.ue_Qty as DetailQty,
+  conv.Convertion AS DetailConvFactor
 FROM {{ source('mp_infor', 'material_usage_mp_new') }} cop
   LEFT JOIN {{ source('mp_infor', 'Jobs') }} jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
   LEFT JOIN {{ source('PlantControlGianyarDps', 'JO_PostedBy') }} matl ON cop.ue_Job = matl.RefNum
@@ -340,16 +347,19 @@ SELECT DISTINCT
   cop.ue_ProductCode AS ProductCode,
   cop.ue_suffix AS Suffix,
   cop.ue_WC AS WorkCenter,
-  cop.month_year AS MonthYear,
+  '' AS MonthYear,
   '' AS Resource,
   jobs.whse AS Warehouse,
-  matl.ue_UpdatedBy AS UpdatedBy
+  matl.ue_UpdatedBy AS UpdatedBy,
+  header.ue_Qty as DetailQty,
+  detailconv.Convertion AS DetailConvFactor
 FROM {{ source('mp_infor', 'material_usage_mp_new') }} cop
   LEFT JOIN {{ source('mp_infor', 'material_usage_mp_new') }} header ON cop.ue_Job = header.ue_Job 
                                                                      AND header.ue_ItemType = 'Item'
   LEFT JOIN {{ source('mp_infor', 'Jobs') }} jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
   LEFT JOIN {{ source('PlantControlGianyarDps', 'JO_PostedBy') }} matl ON cop.ue_Job = matl.RefNum       
-  LEFT JOIN {{ ref('conversions_table') }} conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM                                      
+  LEFT JOIN {{ ref('conversions_table') }} conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM
+  LEFT JOIN {{ ref('conversions_table') }} detailconv ON header.ue_Item = detailconv.Item AND header.ue_UM = detailconv.UOM                                    
 WHERE cop.ue_ItemType <> 'Item'
 UNION ALL
 --END ABSORB MP--
@@ -430,10 +440,12 @@ SELECT DISTINCT
   cop.ue_ProductCode AS ProductCode,
   cop.ue_suffix AS Suffix,
   cop.ue_WC AS WorkCenter,
-  cop.month_year AS MonthYear,
+  '' AS MonthYear,
   '' AS Resource,
   jobs.whse AS Warehouse,
-  matl.ue_UpdatedBy AS UpdatedBy
+  matl.ue_UpdatedBy AS UpdatedBy,
+  cop.ue_Qty as DetailQty,
+  conv.Convertion AS DetailConvFactor
 FROM {{ source('mp_infor', 'cost_of_production_PLN_mp') }} cop
   LEFT JOIN {{ source('mp_infor', 'Jobs') }} jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
   LEFT JOIN {{ source('PlantControlGianyarDps', 'JO_PostedBy') }} matl ON cop.ue_Job = matl.RefNum
@@ -515,16 +527,19 @@ SELECT DISTINCT
   cop.ue_ProductCode AS ProductCode,
   cop.ue_suffix AS Suffix,
   cop.ue_WC AS WorkCenter,
-  cop.month_year AS MonthYear,
+  '' AS MonthYear,
   '' AS Resource,
   jobs.whse AS Warehouse,
-  matl.ue_UpdatedBy AS UpdatedBy
+  matl.ue_UpdatedBy AS UpdatedBy,
+  header.ue_Qty as DetailQty,
+  detailconv.Convertion AS DetailConvFactor
 FROM {{ source('mp_infor', 'cost_of_production_PLN_mp') }} cop
   LEFT JOIN {{ source('mp_infor', 'cost_of_production_PLN_mp') }} header ON cop.ue_Job = header.ue_Job 
                                                                          AND header.ue_ItemType = 'Item'
   LEFT JOIN {{ source('mp_infor', 'Jobs') }} jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
   LEFT JOIN {{ source('PlantControlGianyarDps', 'JO_PostedBy') }} matl ON cop.ue_Job = matl.RefNum
   LEFT JOIN {{ ref('conversions_table') }} conv ON cop.ue_Item = conv.Item AND cop.ue_UM = conv.UOM
+  LEFT JOIN {{ ref('conversions_table') }} detailconv ON header.ue_Item = detailconv.Item AND header.ue_UM = detailconv.UOM  
 WHERE cop.ue_ItemType <> 'Item'
 UNION ALL
 --END PLAN MP--
@@ -586,7 +601,9 @@ SELECT
   '' AS MonthYear,
   '' AS Resource,
   '' AS Warehouse,
-  '' AS UpdatedBy
+  '' AS UpdatedBy,
+  NULL as DetailQty,
+  NULL AS DetailConvFactor
 FROM {{ source('mp_infor', 'salestransaction') }} sales
 
 ORDER BY Job, ItemType
