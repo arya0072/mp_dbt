@@ -115,7 +115,7 @@ SELECT
   END AS CategoryJO,
   a.TotalHours,
   CASE
-    WHEN SUBSTR(a.Job, 1, 4) IN ('JSFT') THEN ROUND(job_route.Efficiency)
+    WHEN SUBSTR(a.Job, 1, 4) IN ('JSFT') THEN ROUND((job_route.Efficiency / 100), 2)
     ELSE ROUND((job_route.Efficiency / 90),2)
   END AS AdjusmentProd,
   a.Posted,
@@ -124,9 +124,9 @@ SELECT
   JT.AHrs AS WH_PPIC,
   JR.EMP_PPIC AS EMP_PPIC,
   absence.absence_date
-FROM mp_dbt.MP80_IncentiveMP_v a
-LEFT JOIN mp_infor.hris_user user ON TRIM(a.EmpNum) = user.nik
-LEFT JOIN mp_infor.product_codes_BQ prod_code ON a.ProductCode = prod_code.ProductCode
+FROM {{ ref('MP80_IncentiveMP_v') }} a
+LEFT JOIN {{ source('mp_infor', 'hris_user') }} user ON TRIM(a.EmpNum) = user.nik
+LEFT JOIN {{ source('mp_infor', 'product_codes_BQ') }} prod_code ON a.ProductCode = prod_code.ProductCode
 LEFT JOIN (
     SELECT 
         Job,
@@ -135,7 +135,7 @@ LEFT JOIN (
             WHEN Efficiency <= 1.0 AND SUBSTR(Job, 1, 4) IN ('JSFT') THEN 90
             ELSE Efficiency
         END AS Efficiency  
-    FROM mp_infor.jobRoutes
+    FROM {{ source('mp_infor', 'jobRoutes') }}
 ) job_route ON a.Job = job_route.Job AND job_route.OperNum = '10'
 LEFT JOIN (
     SELECT 
@@ -143,17 +143,17 @@ LEFT JOIN (
         a.employee_name,
         FORMAT_DATE('%Y-%m-%d', a.absence_date) AS absence_date,
         user_absence.mins_late AS minutes_late
-    FROM mp_infor.employee_absence a
-    LEFT JOIN mp_infor.user_absence user_absence 
+    FROM {{ source('mp_infor', 'employee_absence') }} a
+    LEFT JOIN {{ source('mp_infor', 'user_absence') }} user_absence 
         ON a.id_user_absence = user_absence.id_user_absence
 ) absence ON TRIM(a.EmpNum) = absence.nik
 AND FORMAT_DATE('%Y-%m-%d', a.IncentiveDate) = absence.absence_date
-LEFT JOIN mp_dbt.job_trans_v JT ON a.Job = JT.Job
+LEFT JOIN {{ ref('job_trans_v') }} JT ON a.Job = JT.Job
 LEFT JOIN (
     SELECT 
         Job, 
        AVG(jbrUf_MP80_EmployeePlan) AS EMP_PPIC 
-    FROM mp_infor.jobRoutes 
+    FROM {{ source('mp_infor', 'jobRoutes') }}
     WHERE OperNum = '10'
     GROUP BY Job
 ) JR ON a.Job = JR.Job

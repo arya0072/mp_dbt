@@ -56,4 +56,3 @@ SELECT
     )
   ) AS Date
 FROM {{ source('mp_infor', 'budget_sales') }} 
-WHERE Status = 'B'

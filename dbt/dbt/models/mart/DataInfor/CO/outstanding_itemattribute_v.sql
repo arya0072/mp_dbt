@@ -52,7 +52,7 @@ SELECT
   item_att.ue_FilterPaperColor, 
   item_att.ue_Logo,
   a.ue_SalesTeam,
-  item_att.ue_PrintTipCat, 
+  item_cust.Uf_MP04_CIPrintTipCategory AS ue_PrintTipCat, 
   a.ue_QtyReadyToShip,
   a.ue_QtyReadyToShipInCoUM,
   a.ue_QtyReadyToShipInPcs,
@@ -74,7 +74,8 @@ SELECT
   item_att_all.AttributeLabel,
   item_att_all.Type,
   item_cust.itmcstUf_MP04_ConeCategory AS cone_category,
-  a.ue_RollingGroup AS RollingGroup
+  a.ue_RollingGroup AS RollingGroup,
+  item_cust.effectdate AS FG_ReleaseDate
   -- budget_sales.*
 from {{ source('mp_infor', 'outstanding_co') }} a
   LEFT JOIN {{ source('mp_infor', 'item_atrribute') }} item_att ON a.ue_item = item_att.ue_Item

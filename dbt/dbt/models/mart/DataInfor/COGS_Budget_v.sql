@@ -39,7 +39,14 @@ SELECT
   b.LaborCost,
   b.FovhdCost,
   b.VovhdCost,
+  b.OutCost,
   b.COGSCost,
+  b.TotalMatlCost,
+  b.TotalLaborCost,
+  b.TotalFovhdCost,
+  b.TotalVovhdCost,
+  b.TotalOutCost,
+  b.TotalCOGSCost,
   PARSE_DATE('%d %b %Y', 
     CONCAT(
       '1 ', 
@@ -57,18 +64,27 @@ SELECT
         WHEN CAST(Period AS STRING) = '11' THEN 'Nov'
         WHEN CAST(Period AS STRING) = '12' THEN 'Dec'
       END,
-      ' ', CAST(Year AS STRING)
+      ' ', CAST(a.Year AS STRING)
     )
   ) AS Date
 FROM {{ source('mp_infor', 'budget_sales') }} a
   LEFT JOIN (SELECT
               DISTINCT
               Item,
+              Year,
               AVG(MatlCost) AS MatlCost,
               AVG(LaborCost) AS LaborCost,
               AVG(FovhdCost) AS FovhdCost,
               AVG(VovhdCost) AS VovhdCost,
-              AVG(MatlCost+LaborCost+FovhdCost+VovhdCost) AS COGSCost
+              AVG(OutCost) AS OutCost,
+              SUM(TotalMatlCost) AS TotalMatlCost,
+              SUM(TotalLbrCost) AS TotalLaborCost,
+              SUM(TotalFovhdCost) AS TotalFovhdCost,
+              SUM(TotalVovhdCost) AS TotalVovhdCost,
+              SUM(TotalOutCost) AS TotalOutCost,
+              AVG(MatlCost+LaborCost+FovhdCost+VovhdCost+OutCost) AS COGSCost,
+              SUM(TotalMatlCost+TotalLbrCost+TotalFovhdCost+TotalVovhdCost+TotalOutCost) AS TotalCOGSCost
               FROM {{ source('mp_infor', 'budget_cogs') }} 
-              GROUP BY Item ) b ON a.Item = b.Item 
-WHERE  a.status='B'
+              GROUP BY Item,
+              Year ) b ON a.Item = b.Item 
+              AND a.Year = b.Year
