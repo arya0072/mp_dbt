@@ -18,6 +18,7 @@ Select
     gabung.ue_TotalLaborCost,
     gabung.ue_TotalVovhdCost,
     gabung.ue_TotalFovhdCost,
+    gabung.ue_TotalOutsideCost,
     gabung.ue_TransDate,
     gabung.category,
     AVG(gabung.Qty_PcsItem) AS Qty_PcsItem,
@@ -39,6 +40,7 @@ from
     a.ue_TotalLaborCost,
     a.ue_TotalVovhdCost,
     a.ue_TotalFovhdCost,
+    a.ue_TotalOutsideCost,
     a.ue_TransDate,
     a.ue_whse,
     CASE
@@ -113,6 +115,7 @@ GROUP BY
     gabung.ue_TotalLaborCost,
     gabung.ue_TotalVovhdCost,
     gabung.ue_TotalFovhdCost,
+    gabung.ue_TotalOutsideCost,
     gabung.ue_TransDate,
     gabung.category,
     gabung.Qty_SC,

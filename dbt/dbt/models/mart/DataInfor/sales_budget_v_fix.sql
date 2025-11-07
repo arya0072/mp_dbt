@@ -57,12 +57,12 @@ LEFT JOIN (SELECT DISTINCT
               PCDescription,
               NPD,
               Date,
-              AVG(COGSCost) * sum(Qty) AS TotalCOGS,
-              sum(COGSCost) AS COGS,
-              sum(MatlCost) AS COGSMat,
-              sum(LaborCost) AS COGSLab,
-              sum(FovhdCost) AS COGSFOvh,
-              sum(VovhdCost) AS COGSVovh
+              0 AS TotalCOGS, --AVG(COGSCost) * sum(Qty)
+              0 AS COGS, -- sum(COGSCost)
+              0 AS COGSMat, --sum(MatlCost)
+              0 AS COGSLab, --sum(LaborCost)
+              0 AS COGSFOvh, --sum(FovhdCost)
+              0 AS COGSVovh --sum(VovhdCost)
           FROM {{ ref('COGS_Budget_v') }} 
           GROUP BY  CustName,
               PCDescription,

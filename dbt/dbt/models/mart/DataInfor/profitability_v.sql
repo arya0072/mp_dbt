@@ -21,6 +21,7 @@ SELECT DISTINCT
   '' AS ExchRate,
   cop.ue_Job AS Job,
   CASE
+    when SUBSTR(cop.ue_ProductCode, 1, 2) IN ('SM') AND cop.ue_ItemType = 'Item' THEN '*Semi Finish Goods'
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('PCK') AND cop.ue_ItemType = 'Material' THEN 'Packaging'
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('SUN') AND cop.ue_ItemType = 'Material' THEN 'Packaging'
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('FGD','SCN') AND cop.ue_ItemType = 'Material' AND cop.ue_WCDesc = 'Packing Bulk' THEN 'Cones' 
@@ -108,6 +109,7 @@ SELECT DISTINCT
   '' AS ExchRate,
   cop.ue_Job AS Job,
   CASE
+    when SUBSTR(cop.ue_ProductCode, 1, 2) IN ('SM') AND cop.ue_ItemType = 'Item' THEN '*Semi Finish Goods'
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('PCK') AND cop.ue_ItemType = 'Material' THEN 'Packaging'
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('SUN') AND cop.ue_ItemType = 'Material' THEN 'Packaging'
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('FGD','SCN') AND cop.ue_ItemType = 'Material' AND cop.ue_WCDesc = 'Packing Bulk' THEN 'Cones' 

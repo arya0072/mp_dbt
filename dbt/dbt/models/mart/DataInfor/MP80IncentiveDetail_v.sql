@@ -94,8 +94,12 @@ SELECT
     ELSE ROUND(((job_route.Efficiency / 90) *  (a.TargetQty * a.TotalHours)),2)
   END AS TargetByMatrix_WHActual,
   CASE
-    WHEN ROUND((job_route.Efficiency / 90),2) > 1 THEN ROUND((((a.Netto) /  (a.TargetQty * a.TotalHours)) * 100),2) 
-    ELSE ROUND((((a.Netto) / ((job_route.Efficiency / 90) *  a.TargetQty * a.TotalHours)) * 100),2) 
+    WHEN ROUND((job_route.Efficiency / 90), 2) > 1 THEN 
+        ROUND( (SUM(a.Netto) / SUM(a.TargetQty * a.TotalHours)) * 100 , 2)
+    ELSE 
+        ROUND( 
+            (SUM(a.Netto) / SUM((job_route.Efficiency / 90) * a.TargetQty * a.TotalHours)) * 100
+        , 2)
   END AS ProductivityRateByMatrix,
   CASE
     WHEN ROUND((job_route.Efficiency / 90),2) >= 1 THEN '-'
@@ -123,7 +127,51 @@ SELECT
   a.LastTransactionDate,
   JT.AHrs AS WH_PPIC,
   JR.EMP_PPIC AS EMP_PPIC,
-  absence.absence_date
+  absence.absence_date,
+  CASE 
+    WHEN (
+      (SUM(a.Netto) / SUM(a.TotalHours)) /
+      (
+        SUM(
+          CASE
+            WHEN SUBSTR(a.Job, 1, 4) IN ('JSFT') THEN (a.TargetQty * a.TotalHours * (job_route.Efficiency / 100))
+            WHEN ROUND((job_route.Efficiency / 90), 2) > 1 THEN (a.TargetQty * a.TotalHours)
+            ELSE ROUND(((job_route.Efficiency / 90) * (a.TargetQty * a.TotalHours)), 2)
+          END
+        ) / SUM(a.TotalHours)
+      )
+    ) < 1
+    THEN 'Underperform'
+    ELSE 'Perform'
+  END AS StatusInMatrixExReject,
+  CASE 
+    WHEN (
+      (SUM(a.Netto) / SUM(a.TotalHours)) /
+      (
+        SUM(
+          CASE
+            WHEN SUBSTR(a.Job, 1, 4) IN ('JSFT') THEN (a.TargetQty * a.TotalHours * (job_route.Efficiency / 100))
+            WHEN ROUND((job_route.Efficiency / 90), 2) > 1 THEN (a.TargetQty * a.TotalHours)
+            ELSE ROUND(((job_route.Efficiency / 90) * (a.TargetQty * a.TotalHours)), 2)
+          END
+        ) / SUM(a.TotalHours)
+      )
+    ) < 1
+    OR AVG(ROUND((a.Reject / (prod_code.prodcodeUf_MP80_RejectScore2 * a.gross)),2)) > 1
+    THEN 'Underperform'
+    ELSE 'Perform'
+  END AS StatusInMatrixInReject,
+  CASE 
+    WHEN (SUM(a.Netto) / SUM(a.TargetQty * a.TotalHours)) < 1
+    THEN 'Underperform'
+    ELSE 'Perform'
+  END AS StatusExMatrixExReject,
+  CASE 
+    WHEN (SUM(a.Netto) / SUM(a.TargetQty * a.TotalHours)) < 1
+        OR AVG(ROUND((a.Reject / (prod_code.prodcodeUf_MP80_RejectScore2 * a.gross)),2)) > 1
+    THEN 'Underperform'
+    ELSE 'Perform'
+  END AS StatusExMatrixInReject
 FROM {{ ref('MP80_IncentiveMP_v') }} a
 LEFT JOIN {{ source('mp_infor', 'hris_user') }} user ON TRIM(a.EmpNum) = user.nik
 LEFT JOIN {{ source('mp_infor', 'product_codes_BQ') }} prod_code ON a.ProductCode = prod_code.ProductCode
