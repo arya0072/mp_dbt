@@ -6,7 +6,7 @@
 
 SELECT
   a.*,
-  uom.ConvFactor AS convertion,
+  coalesce(uom.ConvFactor,uom.ConvFactor) AS convertion,
   b.DeptDescription
 FROM {{ ref('profitability_v') }} a 
   LEFT JOIN (SELECT 
