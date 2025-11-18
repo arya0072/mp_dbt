@@ -75,7 +75,8 @@ SELECT
   item_att_all.Type,
   item_cust.itmcstUf_MP04_ConeCategory AS cone_category,
   a.ue_RollingGroup AS RollingGroup,
-  item_cust.effectdate AS FG_ReleaseDate
+  item_cust.effectdate AS FG_ReleaseDate,
+  a.ue_Uf_MP144_PPIC_Note AS PPIC_Notes
   -- budget_sales.*
 from {{ source('mp_infor', 'outstanding_co') }} a
   LEFT JOIN {{ source('mp_infor', 'item_atrribute') }} item_att ON a.ue_item = item_att.ue_Item

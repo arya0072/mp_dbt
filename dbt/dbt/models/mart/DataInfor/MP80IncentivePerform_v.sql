@@ -7,35 +7,45 @@
 SELECT
  a.EmpNum,
  a.EmployeeName,
+ UPPER(SUBSTR(TRIM(a.job), 1, 4)) AS JobPrefix,
  a.Location,
  a.Resource,
- a.Item,
- a.Job,
- a.Description,
- a.IncentiveDate,
+ FORMAT_DATE('%Y-%m', a.IncentiveDate) AS IncentiveDate,
  a.ProductCode,
- SUM(a.AdjusmentProd) AS AdjusmentProd,
+ ROUND(SUM(a.AdjusmentProd), 2) AS AdjusmentProd,
  SUM(a.Reject) AS Reject, 
  SUM(a.TargetQty) AS TargetQty,
- AVG(a.ActPercenReject) AS ActPercenReject, 
+ ROUND(AVG(a.ActPercenReject), 2) AS ActPercenReject, 
  SUM(a.TargetReject) AS TargetReject,
  SUM(a.Netto) AS Netto,
- SUM(a.TotalHours) AS TotalHours,
- SUM(a.TargetByMatrix_WHActual) AS TargetByMatrix_WHActual,
- AVG(ProductivityRateByMatrix) AS ProductivityRateByMatrix, 
+ ROUND(SUM(a.TotalHours), 2) AS TotalHours,
+ ROUND(SUM(a.TargetByMatrix_WHActual), 2) AS TargetByMatrix_WHActual,
+ ROUND(AVG(ProductivityRateByMatrix), 2) AS ProductivityRateByMatrix,
+ ROUND(AVG(ActualProductivity), 2) AS ActualProductivity,
  CASE 
-  WHEN AVG(a.ProductivityRateByMatrix) > 100 THEN 'Perform'
+  WHEN AVG(a.ProductivityRateByMatrix) >= 100 THEN 'Perform'
   WHEN AVG(a.ProductivityRateByMatrix) < 100 THEN 'Under Perform'
   ELSE NULL
-END AS stat
+ END AS StatInMatrixExReject,
+ CASE 
+  WHEN AVG(a.ProductivityRateByMatrix) < 100 OR AVG(a.ActPercenReject) > 1 THEN 'Under Perform' 
+  ELSE 'Perform'
+ END AS StatInMatrixInReject,
+ CASE 
+  WHEN AVG(a.ActualProductivity) >= 100 THEN 'Perform'
+  WHEN AVG(a.ActualProductivity) < 100 THEN 'Under Perform'
+  ELSE NULL
+ END AS StatExMatrixExReject,
+ CASE 
+  WHEN AVG(a.ActualProductivity) < 100 OR AVG(a.ActPercenReject) > 1 THEN 'Under Perform'
+  ELSE 'Perform'
+ END AS StatExMatrixInReject
 FROM {{ ref('MP80IncentiveDetail_v') }} a
-GROUP BY 
-a.EmpNum,
+group by  
+ a.EmpNum,
  a.EmployeeName,
  a.Location,
+ a.ProductCode,
  a.Resource,
- a.Item,
- a.Job,
- a.Description,
- a.IncentiveDate,
- a.ProductCode
+ IncentiveDate,
+ JobPrefix

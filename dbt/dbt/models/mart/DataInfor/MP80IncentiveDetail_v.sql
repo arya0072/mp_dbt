@@ -12,6 +12,7 @@ SELECT
   user.Section AS Resource,
   a.ResourceTrans,
   user.SectionGroup AS ResourceGroup,
+  user.JoinDate,
   a.Job,
   DATE(a.IncentiveDate) AS IncentiveDate,
   DATE(
@@ -223,6 +224,7 @@ GROUP BY
   TRIM(a.ConeType),
   user.Section,
   user.SectionGroup,
+  user.JoinDate,
   a.Gross,
   a.BA,
   a.BLT,
