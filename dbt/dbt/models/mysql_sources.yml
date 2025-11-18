@@ -908,7 +908,7 @@ sources:
           - name: created_by
           - name: updated_by
           - name: deleted_by
-          - name: access
+          - name: "access"
       - name: dms_document_version
         columns:
           - name: id
