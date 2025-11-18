@@ -21384,38 +21384,6 @@ sources:
     - name: deleted_by
       data_type: varchar
       description: ''
-  - name: api_user
-    columns:
-    - name: id
-      data_type: int
-      description: ''
-    - name: name
-      data_type: varchar
-      description: ''
-    - name: client_id
-      data_type: varchar
-      description: ''
-    - name: secret_key
-      data_type: varchar
-      description: ''
-    - name: created_at
-      data_type: datetime
-      description: ''
-    - name: updated_at
-      data_type: datetime
-      description: ''
-    - name: deleted_at
-      data_type: datetime
-      description: ''
-    - name: created_by
-      data_type: varchar
-      description: ''
-    - name: updated_by
-      data_type: varchar
-      description: ''
-    - name: deleted_by
-      data_type: varchar
-      description: ''
   - name: audits
     columns:
     - name: id
