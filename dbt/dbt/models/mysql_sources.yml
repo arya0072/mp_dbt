@@ -1,7 +1,9 @@
 version: 2
 
 sources:
-  - name: hrpayroll
+  - name: hris
+    database: hrpayroll
+    schema: hrpayroll
     tables:
       - name: 360_answers
         columns:
