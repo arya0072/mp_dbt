@@ -21,6 +21,8 @@ SELECT DISTINCT
   '' AS ExchRate,
   cop.ue_Job AS Job,
   CASE
+    when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('SCP') AND cop.ue_ItemType = 'Item' THEN '*Semi Finish Goods'
+    when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('SCP') AND cop.ue_ItemType = 'Material' THEN 'Cones'
     when SUBSTR(cop.ue_ProductCode, 1, 2) IN ('SM') AND cop.ue_ItemType = 'Item' THEN '*Semi Finish Goods'
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('PCK') AND cop.ue_ItemType = 'Material' THEN 'Packaging'
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('SUN') AND cop.ue_ItemType = 'Material' THEN 'Packaging'
@@ -85,7 +87,10 @@ SELECT DISTINCT
   '' AS Resource,
   jobs.whse AS Warehouse,
   matl.ue_UpdatedBy AS UpdatedBy,
-  cop.ue_Qty as DetailQty,
+  CASE
+    when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('FGD') AND cop.ue_ItemType = 'Item' THEN  cop.ue_Qty  
+  ELSE 0
+  END AS DetailQty,
   conv.Convertion AS DetailConvFactor
 FROM {{ source('mp_infor', 'cost_of_production_mp_new') }} cop 
   LEFT JOIN {{ source('mp_infor', 'Jobs') }} jobs ON cop.ue_Job = jobs.Job AND cop.ue_Suffix = jobs.Suffix
@@ -109,6 +114,8 @@ SELECT DISTINCT
   '' AS ExchRate,
   cop.ue_Job AS Job,
   CASE
+    when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('SCP') AND cop.ue_ItemType = 'Item' THEN '*Semi Finish Goods'
+    when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('SCP') AND cop.ue_ItemType = 'Material' THEN 'Cones'
     when SUBSTR(cop.ue_ProductCode, 1, 2) IN ('SM') AND cop.ue_ItemType = 'Item' THEN '*Semi Finish Goods'
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('PCK') AND cop.ue_ItemType = 'Material' THEN 'Packaging'
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('SUN') AND cop.ue_ItemType = 'Material' THEN 'Packaging'
@@ -138,7 +145,7 @@ SELECT DISTINCT
   cop.ue_Item AS ItemChild,
   cop.ue_CustNum AS CustomerNum,
   cop.ue_CustName AS CustomerName,
-  header.ue_qty AS ProdQty,
+  0 AS ProdQty,
   cop.ue_Qty as ProdQtyChild,
   header.ue_qty AS ProdQtyAvg,
   CAST(0 AS FLOAT64) as SalesQtyPcs,
@@ -173,7 +180,10 @@ SELECT DISTINCT
   '' AS Resource,
   jobs.whse AS Warehouse,
   matl.ue_UpdatedBy AS UpdatedBy,
-  header.ue_Qty as DetailQty,
+  CASE
+    when SUBSTR(header.ue_ProductCode, 1, 3) IN ('FGD') AND header.ue_ItemType = 'Item' THEN  header.ue_Qty  
+  ELSE 0
+  END AS DetailQty,
   detailconv.Convertion AS DetailConvFactor
 FROM {{ source('mp_infor', 'cost_of_production_mp_new') }} cop
   LEFT JOIN {{ source('mp_infor', 'cost_of_production_mp_new') }} header ON cop.ue_Job = header.ue_Job 
@@ -203,6 +213,9 @@ SELECT DISTINCT
   '' AS ExchRate,
   cop.ue_Job AS Job,
   CASE
+    when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('SCP') AND cop.ue_ItemType = 'Item' THEN '*Semi Finish Goods'
+    when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('SCP') AND cop.ue_ItemType = 'Material' THEN 'Cones'
+    when SUBSTR(cop.ue_ProductCode, 1, 2) IN ('SM') AND cop.ue_ItemType = 'Item' THEN '*Semi Finish Goods'
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('PCK') AND cop.ue_ItemType = 'Material' THEN 'Packaging'
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('SUN') AND cop.ue_ItemType = 'Material' THEN 'Packaging'
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('FGD','SCN') AND cop.ue_ItemType = 'Material' AND cop.ue_WCDesc = 'Packing Bulk' THEN 'Cones' 
@@ -290,6 +303,9 @@ SELECT DISTINCT
   '' AS ExchRate,
   cop.ue_Job AS Job,
   CASE
+    when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('SCP') AND cop.ue_ItemType = 'Item' THEN '*Semi Finish Goods'
+    when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('SCP') AND cop.ue_ItemType = 'Material' THEN 'Cones'
+    when SUBSTR(cop.ue_ProductCode, 1, 2) IN ('SM') AND cop.ue_ItemType = 'Item' THEN '*Semi Finish Goods'
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('PCK') AND cop.ue_ItemType = 'Material' THEN 'Packaging'
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('SUN') AND cop.ue_ItemType = 'Material' THEN 'Packaging'
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('FGD','SCN') AND cop.ue_ItemType = 'Material' AND cop.ue_WCDesc = 'Packing Bulk' THEN 'Cones' 
@@ -318,7 +334,7 @@ SELECT DISTINCT
   cop.ue_Item AS ItemChild,
   cop.ue_CustNum AS CustomerNum,
   cop.ue_CustName AS CustomerName,
-  header.ue_qty AS ProdQty,
+  0 AS ProdQty,
   cop.ue_qty as ProdQtyChild,
   header.ue_Qty AS ProdQtyAvg,
   CAST(0 AS FLOAT64) as SalesQtyPcs,
@@ -383,6 +399,9 @@ SELECT DISTINCT
   '' AS ExchRate,
   cop.ue_Job AS Job,
   CASE
+    when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('SCP') AND cop.ue_ItemType = 'Item' THEN '*Semi Finish Goods'
+    when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('SCP') AND cop.ue_ItemType = 'Material' THEN 'Cones'
+    when SUBSTR(cop.ue_ProductCode, 1, 2) IN ('SM') AND cop.ue_ItemType = 'Item' THEN '*Semi Finish Goods'
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('PCK') AND cop.ue_ItemType = 'Material' THEN 'Packaging'
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('SUN') AND cop.ue_ItemType = 'Material' THEN 'Packaging'
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('FGD','SCN') AND cop.ue_ItemType = 'Material' AND cop.ue_WCDesc = 'Packing Bulk' THEN 'Cones' 
@@ -470,6 +489,9 @@ SELECT DISTINCT
   '' AS ExchRate,
   cop.ue_Job AS Job,
   CASE
+    when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('SCP') AND cop.ue_ItemType = 'Item' THEN '*Semi Finish Goods'
+    when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('SCP') AND cop.ue_ItemType = 'Material' THEN 'Cones'
+    when SUBSTR(cop.ue_ProductCode, 1, 2) IN ('SM') AND cop.ue_ItemType = 'Item' THEN '*Semi Finish Goods'
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('PCK') AND cop.ue_ItemType = 'Material' THEN 'Packaging'
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('SUN') AND cop.ue_ItemType = 'Material' THEN 'Packaging'
     when SUBSTR(cop.ue_ProductCode, 1, 3) IN ('FGD','SCN') AND cop.ue_ItemType = 'Material' AND cop.ue_WCDesc = 'Packing Bulk' THEN 'Cones' 
@@ -498,7 +520,7 @@ SELECT DISTINCT
   cop.ue_Item AS ItemChild,
   cop.ue_CustNum AS CustomerNum,
   cop.ue_CustName AS CustomerName,
-  header.ue_qty AS ProdQty,
+  0 AS ProdQty,
   cop.ue_qty as ProdQtyChild,
   header.ue_Qty AS ProdQtyAvg,
   CAST(0 AS FLOAT64) as SalesQtyPcs,
