@@ -1,0 +1,26 @@
+id: push_to_git
+namespace: dev
+
+inputs:
+  - id: commit_message
+    type: STRING
+    defaults: "Changes to dbt from Kestra"
+  
+  - id: dry_run
+    type: SELECT
+    values:
+      - true
+      - false
+    defaults: true
+
+tasks:
+  - id: commit_and_push
+    type: io.kestra.plugin.git.PushNamespaceFiles
+    namespace: dev
+    username: arya0072
+    password: "{{ kv('GITHUB_ACC') }}"
+    url: https://github.com/arya0072/mp_dbt
+    branch: main
+    gitDirectory: dbt
+    dryRun: "{{ inputs.dry_run }}"
+    commitMessage: "{{ inputs.commit_message }}"
